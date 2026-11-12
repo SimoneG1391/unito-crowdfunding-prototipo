@@ -60,9 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   <div class="project-hero">
     <div>
-      <span class="tag" style="--tc:${t.colore};border:1px solid var(--line)">${t.nome}</span>
+      <span class="tag" style="--tc:${t.colore};border:1px solid #e2dccf">${t.nome}</span>
       <h1 style="margin-top:12px">${esc(c.titolo)}</h1>
-      <p class="lead" style="font-size:1.2rem;color:var(--ink-2)">${esc(c.sottotitolo)}</p>
+      <p class="lead" style="font-size:1.2rem;color:#2b3a55">${esc(c.sottotitolo)}</p>
       <div class="project-art"><button class="play" type="button" id="video"><span class="ico" aria-hidden="true">▶</span>Guarda il video (1:30, con sottotitoli)</button></div>
       <p class="summary-30"><strong>In breve:</strong> ${esc(c.sintesi)}</p>
     </div>
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${progress(c, true)}
         <div style="margin:22px 0 14px">${cta}</div>
         <button class="btn btn-ghost btn-block" type="button" id="segui" aria-pressed="false"></button>
-        <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+        <hr style="border:0;border-top:1px solid #e2dccf;margin:20px 0">
         <p class="label" style="font-size:.9rem">Condividi o ritrova la campagna</p>
         <div class="shortlink"><code>${breve}</code><button type="button" id="copia">Copia link</button></div>
         <div class="share-row" style="margin-top:10px">
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <section class="block" id="team" aria-labelledby="h-team">
         <h2 id="h-team">Chi lo propone</h2>
         <div class="panel person">
-          <div class="avatar" aria-hidden="true">${c.responsabile.iniziali}</div>
+          <div class="avatar" aria-hidden="true" style="background:${t.colore}">${c.responsabile.iniziali}</div>
           <div>
             <strong style="font-size:1.1rem">${esc(c.responsabile.nome)}</strong><br>
             <span class="muted">${esc(c.responsabile.ruolo)} · ${esc(c.dipartimento)}</span><br>

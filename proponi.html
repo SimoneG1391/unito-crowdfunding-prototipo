@@ -8,12 +8,12 @@
 <link rel="stylesheet" href="css/style.css">
 <style>
   .who { border-top: 5px solid var(--c); }
-  .who .yes { color: var(--ok); font-weight: 700; }
+  .who .yes { color: #1d7a4f; font-weight: 700; }
   .kit { display: flex; gap: 14px; align-items: flex-start; }
-  .kit .file { flex: none; width: 46px; height: 56px; border-radius: 6px; background: var(--soft); display: grid; place-items: center; font-size: .72rem; font-weight: 700; color: var(--ink); border: 1px solid var(--line); }
+  .kit .file { flex: none; width: 2.875rem; height: 3.5rem; border-radius: 6px; background: #efe9de; display: grid; place-items: center; font-size: .72rem; font-weight: 700; color: #13233f; border: 1px solid #e2dccf; }
   .checklist { list-style: none; padding: 0; margin: 0; }
-  .checklist li { padding: 10px 0 10px 34px; position: relative; border-bottom: 1px solid var(--line); }
-  .checklist li::before { content: "✓"; position: absolute; left: 0; top: 9px; width: 22px; height: 22px; border-radius: 50%; background: var(--ok-bg); color: var(--ok); display: grid; place-items: center; font-size: .8rem; font-weight: 700; }
+  .checklist li { padding: 10px 0 10px 34px; position: relative; border-bottom: 1px solid #e2dccf; }
+  .checklist li::before { content: "✓"; position: absolute; left: 0; top: 9px; width: 1.375rem; height: 1.375rem; border-radius: 50%; background: #e4f3ea; color: #1d7a4f; display: grid; place-items: center; font-size: .8rem; font-weight: 700; }
 </style>
 </head>
 <body data-page="proponi">
@@ -25,7 +25,7 @@
       <h1>Proponi un progetto</h1>
       <p class="lead">Hai un'idea che può essere finanziata con 2.000–25.000 €? Ti aiutiamo a trasformarla in una campagna: requisiti chiari, materiali pronti all'uso e uno staff che ti accompagna fino alla fine.</p>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;min-width:260px">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:16.25rem">
       <a class="btn" href="candidatura.html">Inizia la candidatura</a>
       <span class="small muted" style="text-align:center">Circa 40 minuti · puoi salvare e riprendere</span>
     </div>
@@ -34,10 +34,10 @@
   <section class="block" id="chi">
     <h2>Chi può proporre una campagna</h2>
     <div class="grid g4">
-      <div class="panel who" style="--c:var(--ink)"><h3>Docenti e ricercatori</h3><p class="yes">✓ Sì, come responsabili</p><p class="small muted" style="margin:0">Personale strutturato di tutti i dipartimenti.</p></div>
-      <div class="panel who" style="--c:var(--t-tecnologia)"><h3>Assegnisti e post-doc</h3><p class="yes">✓ Sì, come responsabili</p><p class="small muted" style="margin:0">Serve solo un docente di riferimento che firmi la richiesta: la firma la raccogliamo noi.</p></div>
-      <div class="panel who" style="--c:var(--t-ambiente)"><h3>Dottorandi</h3><p class="yes">✓ Sì, con il supervisore</p><p class="small muted" style="margin:0">Il supervisore è co-responsabile del progetto.</p></div>
-      <div class="panel who" style="--c:var(--t-societa)"><h3>Studenti e associazioni</h3><p class="yes">✓ Sì, per progetti di Ateneo</p><p class="small muted" style="margin:0">Con un tutor docente, per progetti con ricadute sulla comunità universitaria.</p></div>
+      <div class="panel who" style="--c:#13233f"><h3>Docenti e ricercatori</h3><p class="yes">✓ Sì, come responsabili</p><p class="small muted" style="margin:0">Personale strutturato di tutti i dipartimenti.</p></div>
+      <div class="panel who" style="--c:#2f6fa3"><h3>Assegnisti e post-doc</h3><p class="yes">✓ Sì, come responsabili</p><p class="small muted" style="margin:0">Serve solo un docente di riferimento che firmi la richiesta: la firma la raccogliamo noi.</p></div>
+      <div class="panel who" style="--c:#2f7d5b"><h3>Dottorandi</h3><p class="yes">✓ Sì, con il supervisore</p><p class="small muted" style="margin:0">Il supervisore è co-responsabile del progetto.</p></div>
+      <div class="panel who" style="--c:#b0602a"><h3>Studenti e associazioni</h3><p class="yes">✓ Sì, per progetti di Ateneo</p><p class="small muted" style="margin:0">Con un tutor docente, per progetti con ricadute sulla comunità universitaria.</p></div>
     </div>
   </section>
 
@@ -96,7 +96,7 @@
     <details class="faq"><summary>Cosa succede se non raggiungo l'obiettivo?</summary><div>I contributi vengono restituiti. Puoi ripresentare il progetto, anche con un obiettivo diverso.</div></details>
   </section>
 
-  <div class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:24px;background:var(--ink);color:#fff;border:0">
+  <div class="panel" style="display:flex;justify-content:space-between;align-items:center;gap:24px;background:#13233f;color:#fff;border:0">
     <div><h2 style="color:#fff;margin:0 0 4px">Pronto a iniziare?</h2><p style="margin:0;color:#cdd6e6">Puoi compilare il modulo in più volte: la bozza viene salvata automaticamente.</p></div>
     <a class="btn btn-accent" href="candidatura.html">Inizia la candidatura</a>
   </div>

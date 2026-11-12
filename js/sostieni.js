@@ -61,7 +61,7 @@
   function riepilogoLaterale(c, d) {
     return `<aside class="sticky" aria-label="Il tuo contributo"><div class="panel summary-box" style="--tc:${TEMI[c.tema].colore}">
       <p class="eyebrow" style="margin-bottom:4px">Stai sostenendo</p>
-      <h3><a href="progetto.html?id=${c.id}" style="color:inherit">${esc(c.titolo)}</a></h3>
+      <h2 style="font-size:1.1rem"><a href="progetto.html?id=${c.id}" style="color:inherit">${esc(c.titolo)}</a></h2>
       ${progress(c)}
       <div style="margin-top:16px">
         <div class="summary-row"><span class="k">Contributo</span><span class="v" id="side-imp">${d.importo ? euro(d.importo) : "—"}</span></div>
@@ -93,14 +93,14 @@
     <div class="page-head" style="margin-bottom:28px"><h1>Sostieni “${esc(c.titolo)}”</h1></div>
     <div class="layout-side"><div>
       ${stepper(1, c.id)}
-      <form id="f" novalidate>
+      <form id="f" novalidate data-demo-errori>
         <fieldset style="border:0;padding:0;margin:0">
           <legend class="label" style="font-size:1.2rem;margin-bottom:14px">Quanto vuoi donare?</legend>
           <div class="options">${preset}
             <div class="opt"><input type="radio" name="imp" id="ialtro" value="altro"${d.preset === "altro" ? " checked" : ""}>
               <label for="ialtro"><span class="radio" aria-hidden="true"></span><span class="amt" style="font-size:1.1rem">Altro importo</span><span class="what">Scegli tu la cifra, da 5 €</span></label></div>
           </div>
-          <div class="field" id="altro-box" style="margin-top:14px;max-width:280px" ${d.preset === "altro" ? "" : "hidden"}>
+          <div class="field" id="altro-box" style="margin-top:14px;max-width:17.5rem" ${d.preset === "altro" ? "" : "hidden"}>
             <label for="altro">Importo in euro</label>
             <input type="number" id="altro" min="5" max="5000" step="1" inputmode="numeric" value="${d.preset === "altro" && d.importo ? d.importo : ""}">
             <span class="error-msg" id="altro-err"></span>
@@ -161,7 +161,7 @@
     <div class="layout-side"><div>
       ${stepper(2, c.id)}
       ${accesso}
-      <form id="f" novalidate>
+      <form id="f" novalidate data-demo-errori>
         <div class="form-errors" id="ferr" role="alert" tabindex="-1"></div>
         <h2 style="font-size:1.3rem">Contatto</h2>
         ${fld("email", 'Email <span class="req">*</span>', "email", "Per la conferma e la ricevuta. Niente pubblicità.", 'autocomplete="email" required')}
@@ -270,7 +270,7 @@
       <div class="form-errors" id="ferr" role="alert"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px">
         <a href="${p2}">← Indietro</a>
-        <button class="btn btn-accent" type="button" id="paga" style="min-width:260px">Conferma e dona ${euro(d.importo)}</button>
+        <button class="btn btn-accent" type="button" id="paga" style="min-width:16.25rem">Conferma e dona ${euro(d.importo)}</button>
       </div>
       <p aria-live="polite" class="sr-only" id="stato"></p>
     </div>${riepilogoLaterale(c, d)}</div>`;
@@ -310,7 +310,7 @@
     <div class="grid g2" style="margin-top:24px;align-items:start">
       <div class="panel" style="--tc:${TEMI[c.tema].colore}">
         ${c.ringraziamento ? `<blockquote class="quote">“${esc(c.ringraziamento)}”</blockquote>` : ""}
-        <div class="person" style="margin-top:18px"><div class="avatar" aria-hidden="true">${c.responsabile.iniziali}</div><div><strong>${esc(c.responsabile.nome)}</strong><br><span class="muted small">${esc(c.titolo)}</span></div></div>
+        <div class="person" style="margin-top:18px"><div class="avatar" aria-hidden="true" style="background:${TEMI[c.tema].colore}">${c.responsabile.iniziali}</div><div><strong>${esc(c.responsabile.nome)}</strong><br><span class="muted small">${esc(c.titolo)}</span></div></div>
         <div style="margin-top:22px">${progress(Object.assign({}, c, { raccolti: c.raccolti + d.importo, sostenitori: c.sostenitori + 1 }))}</div>
         <p class="small muted">Con il tuo contributo la raccolta è salita.</p>
       </div>
@@ -358,9 +358,24 @@
     UCF.animateBars();
   }
 
+  // Stato dimostrativo (&demo=1 o &demo=errori): i passi 2-3 e la conferma si aprono anche senza aver
+  // compilato i passi precedenti, così gli strumenti di analisi automatica possono esaminarli via URL.
+  function prepara(c, step) {
+    const demo = qs("demo");
+    if (!demo || !c) return;
+    if (demo === "errori") { store.sset(KEY, { id: c.id, importo: 25, preset: 25 }); return; }
+    const d = draft();
+    if (d.id !== c.id || !d.email) store.sset(KEY, { id: c.id, importo: 25, preset: 25, email: "giulia.ferraris@esempio.it", metodo: "paypal",
+      ricevuta: true, nome: "Giulia", cognome: "Ferraris", cf: "FRRGLI84B41L219X", aggiorna: true });
+    if (step === "conferma" && (!store.sget("ucf_ultima", null) || store.sget("ucf_ultima", null).id !== c.id))
+      store.sset("ucf_ultima", { id: c.id, importo: 25, data: new Date().toISOString().slice(0, 10), ricevuta: "UNITO-2026-000001",
+        metodo: "paypal", email: "giulia.ferraris@esempio.it", fiscale: true, aggiorna: true });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const c = campagna(qs("id"));
     const step = document.body.dataset.step;
+    prepara(c, step);
     if (step === "conferma") { if (c) conferma(c); else guard(null); return; }
     if (!guard(c)) return;
     ({ 1: passo1, 2: passo2, 3: passo3 })[step](c);

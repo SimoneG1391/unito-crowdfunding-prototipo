@@ -16,7 +16,8 @@
     <p class="lead">UniTO Crowdfunding è il programma ufficiale con cui l'Università degli Studi di Torino raccoglie contributi per progetti di ricerca, didattica e impegno sociale. È gestito dall'Ufficio Fundraising dell'Ateneo.</p>
   </header>
 
-  <section class="block">
+  <section class="block" aria-labelledby="h-gestione">
+    <h2 id="h-gestione">Come sono gestiti i fondi</h2>
     <div class="grid g3">
       <div class="panel"><h3>Chi incassa i fondi</h3><p class="muted" style="margin:0">L'Università di Torino, direttamente. Non ci sono intermediari privati: i contributi arrivano su un conto dell'Ateneo e sono destinati al progetto scelto.</p></div>
       <div class="panel"><h3>Chi verifica le campagne</h3><p class="muted" style="margin:0">Una commissione di docenti e personale dell'Ufficio Fundraising valuta ogni proposta: fattibilità, budget e chiarezza.</p></div>
@@ -28,9 +29,9 @@
     <h2>Il team</h2>
     <div class="grid g4">
       <div class="person"><div class="avatar" aria-hidden="true">SR</div><div><strong>Silvia Rosso</strong><br><span class="small muted">Responsabile Ufficio Fundraising</span></div></div>
-      <div class="person"><div class="avatar" aria-hidden="true" style="background:var(--t-ambiente)">MB</div><div><strong>Matteo Bianco</strong><br><span class="small muted">Supporto ai progetti</span></div></div>
-      <div class="person"><div class="avatar" aria-hidden="true" style="background:var(--t-societa)">AL</div><div><strong>Anna Lanza</strong><br><span class="small muted">Comunicazione</span></div></div>
-      <div class="person"><div class="avatar" aria-hidden="true" style="background:var(--t-salute)">GP</div><div><strong>Giorgio Pautasso</strong><br><span class="small muted">Amministrazione e rendicontazione</span></div></div>
+      <div class="person"><div class="avatar" aria-hidden="true" style="background:#2f7d5b">MB</div><div><strong>Matteo Bianco</strong><br><span class="small muted">Supporto ai progetti</span></div></div>
+      <div class="person"><div class="avatar" aria-hidden="true" style="background:#b0602a">AL</div><div><strong>Anna Lanza</strong><br><span class="small muted">Comunicazione</span></div></div>
+      <div class="person"><div class="avatar" aria-hidden="true" style="background:#8a4b7d">GP</div><div><strong>Giorgio Pautasso</strong><br><span class="small muted">Amministrazione e rendicontazione</span></div></div>
     </div>
   </section>
 
@@ -39,15 +40,15 @@
       <div>
         <h2>Scrivici</h2>
         <p class="muted">Rispondiamo entro 3 giorni lavorativi.</p>
-        <div id="esito" aria-live="polite"></div>
-        <form id="contatto" novalidate>
+        <div id="esito" role="status" aria-live="polite"></div>
+        <form id="contatto" novalidate data-demo-errori>
           <div class="row2">
             <div class="field"><label for="cn">Nome <span class="req">*</span></label><input id="cn" autocomplete="name"><span class="error-msg"></span></div>
             <div class="field"><label for="ce">Email <span class="req">*</span><span class="hint">Ti rispondiamo qui</span></label><input id="ce" type="email" autocomplete="email"><span class="error-msg"></span></div>
           </div>
           <div class="field"><label for="ca">Argomento</label>
-            <select id="ca"><option>Ho una domanda su un contributo</option><option>Vorrei proporre un progetto</option><option>Ricevute e dati fiscali</option><option>Altro</option></select></div>
-          <div class="field"><label for="cm">Messaggio <span class="req">*</span></label><textarea id="cm"></textarea><span class="error-msg"></span></div>
+            <select id="ca" autocomplete="off"><option>Ho una domanda su un contributo</option><option>Vorrei proporre un progetto</option><option>Ricevute e dati fiscali</option><option>Altro</option></select></div>
+          <div class="field"><label for="cm">Messaggio <span class="req">*</span></label><textarea id="cm" autocomplete="off"></textarea><span class="error-msg"></span></div>
           <button class="btn" type="submit">Invia il messaggio</button>
         </form>
       </div>

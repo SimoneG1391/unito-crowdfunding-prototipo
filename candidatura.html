@@ -7,13 +7,13 @@
 <title>Candidatura – Proponi un progetto – UniTO Crowdfunding</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .saved { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--muted); }
-  .saved::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
-  .saved.saving::before { background: var(--accent); }
+  .saved { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: #555c69; }
+  .saved::before { content: ""; width: 0.5625rem; height: 0.5625rem; border-radius: 50%; background: #1d7a4f; }
+  .saved.saving::before { background: #d9932b; }
   .fstep[hidden] { display: none; }
-  .budget-row { display: grid; grid-template-columns: 1fr 160px 40px; gap: 10px; margin-bottom: 10px; align-items: start; }
-  .rm { border: 0; background: var(--soft); border-radius: 8px; height: 48px; cursor: pointer; font-size: 1.1rem; }
-  .drop { border: 2px dashed #cfc8ba; border-radius: var(--r); padding: 22px; text-align: center; background: #fff; }
+  .budget-row { display: grid; grid-template-columns: 1fr 10rem 2.5rem; gap: 10px; margin-bottom: 10px; align-items: start; }
+  .rm { border: 0; background: #efe9de; border-radius: 8px; height: 3rem; cursor: pointer; font-size: 1.1rem; }
+  .drop { border: 2px dashed #cfc8ba; border-radius: 10px; padding: 22px; text-align: center; background: #fff; }
 </style>
 </head>
 <body data-page="proponi">
@@ -28,7 +28,7 @@
   <div id="resume" class="alert alert-info" hidden><span>Hai una bozza salvata il <strong id="resume-when"></strong>. L'abbiamo ripristinata. <button class="linkbtn" id="ricomincia">Ricomincia da zero</button></span></div>
 
   <div class="layout-side">
-    <form id="f" novalidate>
+    <form id="f" novalidate data-demo-errori>
       <ol class="stepper" id="stepper" aria-label="Passaggi della candidatura">
         <li>Chi sei</li><li>Il progetto</li><li>Budget e materiali</li><li>Invio</li>
       </ol>
@@ -43,28 +43,28 @@
         </div>
         <div class="row2">
           <div class="field"><label for="ruolo">Ruolo <span class="req">*</span></label>
-            <select id="ruolo" name="ruolo"><option value="">Scegli…</option><option value="docente">Docente o ricercatore strutturato</option><option value="assegnista">Assegnista o post-doc</option><option value="dottorando">Dottorando/a</option><option value="studente">Studente/ssa o associazione</option></select><span class="error-msg"></span></div>
-          <div class="field"><label for="dip">Dipartimento <span class="req">*</span></label><input id="dip" name="dip" list="dipartimenti" placeholder="Inizia a scrivere…"><span class="error-msg"></span>
+            <select id="ruolo" name="ruolo" autocomplete="off"><option value="">Scegli…</option><option value="docente">Docente o ricercatore strutturato</option><option value="assegnista">Assegnista o post-doc</option><option value="dottorando">Dottorando/a</option><option value="studente">Studente/ssa o associazione</option></select><span class="error-msg"></span></div>
+          <div class="field"><label for="dip">Dipartimento <span class="req">*</span></label><input id="dip" name="dip" autocomplete="off" list="dipartimenti" placeholder="Inizia a scrivere…"><span class="error-msg"></span>
             <datalist id="dipartimenti"><option>Chimica</option><option>Fisica</option><option>Informatica</option><option>Neuroscienze</option><option>Scienze della Terra</option><option>Scienze della Vita e Biologia dei Sistemi</option><option>Scienze agrarie, forestali e alimentari</option><option>Culture, Politica e Società</option></datalist></div>
         </div>
-        <div class="field" id="ref-box" hidden><label for="referente">Docente di riferimento <span class="req">*</span><span class="hint">Per assegnisti, dottorandi e studenti. Gli chiederemo noi la firma: non devi raccoglierla tu.</span></label><input id="referente" name="referente"><span class="error-msg"></span></div>
+        <div class="field" id="ref-box" hidden><label for="referente">Docente di riferimento <span class="req">*</span><span class="hint">Per assegnisti, dottorandi e studenti. Gli chiederemo noi la firma: non devi raccoglierla tu.</span></label><input id="referente" name="referente" autocomplete="off"><span class="error-msg"></span></div>
       </fieldset>
 
       <!-- Passo 2 -->
       <fieldset class="fstep" data-s="2" hidden style="border:0;padding:0;margin:0">
         <legend class="sr-only">Il progetto</legend>
-        <div class="field"><label for="titolo">Titolo della campagna <span class="req">*</span>
-          <button type="button" class="tip" aria-label="Suggerimento sul titolo">?<span class="tip-text" role="tooltip">Massimo 60 caratteri. Usa parole semplici e un verbo d'azione, es. “Misuriamo l'aria nelle scuole” invece di “Monitoraggio IAQ in ambienti scolastici”.</span></button>
-          <span class="counter" data-for="titolo" data-max="60"></span></label>
-          <input id="titolo" name="titolo" maxlength="80"><span class="error-msg"></span></div>
+        <div class="field"><div class="label-row"><label for="titolo">Titolo della campagna <span class="req">*</span></label>
+          <button type="button" class="tip" aria-label="Suggerimento sul titolo">?<span class="tip-text" role="tooltip" id="tip-titolo">Massimo 60 caratteri. Usa parole semplici e un verbo d'azione, es. “Misuriamo l'aria nelle scuole” invece di “Monitoraggio IAQ in ambienti scolastici”.</span></button>
+          <span class="counter" data-for="titolo" data-max="60"></span></div>
+          <input id="titolo" name="titolo" maxlength="80" autocomplete="off" aria-describedby="tip-titolo"><span class="error-msg"></span></div>
         <div class="row2">
-          <div class="field"><label for="tema">Tema <span class="req">*</span></label><select id="tema" name="tema"><option value="">Scegli…</option><option value="ambiente">Ambiente</option><option value="salute">Salute</option><option value="tecnologia">Tecnologia</option><option value="societa">Società</option></select><span class="error-msg"></span></div>
-          <div class="field"><label for="obiettivo">Obiettivo economico (€) <span class="req">*</span><span class="hint">Tra 2.000 e 25.000 €</span></label><input id="obiettivo" name="obiettivo" inputmode="numeric"><span class="error-msg"></span></div>
+          <div class="field"><label for="tema">Tema <span class="req">*</span></label><select id="tema" name="tema" autocomplete="off"><option value="">Scegli…</option><option value="ambiente">Ambiente</option><option value="salute">Salute</option><option value="tecnologia">Tecnologia</option><option value="societa">Società</option></select><span class="error-msg"></span></div>
+          <div class="field"><label for="obiettivo">Obiettivo economico (€) <span class="req">*</span><span class="hint">Tra 2.000 e 25.000 €</span></label><input id="obiettivo" name="obiettivo" inputmode="numeric" autocomplete="off"><span class="error-msg"></span></div>
         </div>
-        <div class="field"><label for="sintesi">Il progetto in breve <span class="req">*</span>
-          <button type="button" class="tip" aria-label="Suggerimento sulla sintesi">?<span class="tip-text" role="tooltip">Spiega in 2–3 frasi cosa farete, per chi e cosa cambierà. Immagina di raccontarlo a un amico che non fa ricerca.</span></button>
-          <span class="counter" data-for="sintesi" data-max="400"></span></label>
-          <textarea id="sintesi" name="sintesi"></textarea><span class="error-msg"></span></div>
+        <div class="field"><div class="label-row"><label for="sintesi">Il progetto in breve <span class="req">*</span></label>
+          <button type="button" class="tip" aria-label="Suggerimento sulla sintesi">?<span class="tip-text" role="tooltip" id="tip-sintesi">Spiega in 2–3 frasi cosa farete, per chi e cosa cambierà. Immagina di raccontarlo a un amico che non fa ricerca.</span></button>
+          <span class="counter" data-for="sintesi" data-max="400"></span></div>
+          <textarea id="sintesi" name="sintesi" autocomplete="off" aria-describedby="tip-sintesi"></textarea><span class="error-msg"></span></div>
       </fieldset>
 
       <!-- Passo 3 -->
@@ -74,9 +74,9 @@
         <button type="button" class="btn btn-ghost btn-sm" id="add">+ Aggiungi una voce</button>
         <p id="budget-tot" class="small" style="margin-top:10px"></p>
         <span class="error-msg" id="budget-err"></span>
-        <div class="field" style="margin-top:20px"><label for="video">Link al video (facoltativo)<span class="hint">YouTube, Vimeo o Drive. Se non hai ancora un video, lo prepariamo insieme con lo storyboard del Creator Kit.</span></label><input id="video" name="video" type="url" placeholder="https://"><span class="error-msg"></span></div>
+        <div class="field" style="margin-top:20px"><label for="video">Link al video (facoltativo)<span class="hint">YouTube, Vimeo o Drive. Se non hai ancora un video, lo prepariamo insieme con lo storyboard del Creator Kit.</span></label><input id="video" name="video" type="url" placeholder="https://" autocomplete="url"><span class="error-msg"></span></div>
         <div class="field"><span class="label">Allegati (facoltativi)</span>
-          <div class="drop"><label for="file" style="font-weight:400;cursor:pointer"><strong style="color:var(--link);text-decoration:underline">Scegli i file</strong> oppure trascinali qui<span class="hint">PDF o immagini, massimo 10 MB ciascuno</span></label><input type="file" id="file" multiple accept=".pdf,image/*" class="sr-only"></div>
+          <div class="drop"><label for="file" style="font-weight:400;cursor:pointer"><strong style="color:#1f4f99;text-decoration:underline">Scegli i file</strong> oppure trascinali qui<span class="hint">PDF o immagini, massimo 10 MB ciascuno</span></label><input type="file" id="file" multiple accept=".pdf,image/*" class="sr-only"></div>
           <ul id="files" class="small" style="padding-left:18px"></ul></div>
       </fieldset>
 
@@ -96,10 +96,10 @@
 
     <aside class="sticky">
       <div class="panel">
-        <h3 style="font-size:1.1rem">Hai bisogno di aiuto?</h3>
+        <h2 style="font-size:1.1rem">Hai bisogno di aiuto?</h2>
         <p class="small">Lo sportello crowdfunding risponde entro 3 giorni lavorativi.</p>
         <p class="small"><a href="mailto:crowdfunding@unito.it">crowdfunding@unito.it</a><br>Martedì e giovedì 10–12: colloqui online</p>
-        <hr style="border:0;border-top:1px solid var(--line)">
+        <hr style="border:0;border-top:1px solid #e2dccf">
         <p class="small" style="margin:0"><a href="proponi.html#kit">Creator Kit</a> · <a href="proponi.html#tempi">Tempi</a> · <a href="proponi.html#requisiti">Requisiti</a></p>
       </div>
     </aside>
@@ -139,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- Budget ---------- */
   function budgetRow(v = "", a = "") {
     const d = document.createElement("div"); d.className = "budget-row";
-    d.innerHTML = `<div><label class="sr-only">Voce di spesa</label><input placeholder="Es. 10 sensori di torbidità" value="${esc(v)}" data-b="v"></div>
-      <div><label class="sr-only">Importo in euro</label><input placeholder="€" inputmode="numeric" value="${esc(a)}" data-b="a"></div>
+    d.innerHTML = `<div><label class="sr-only">Voce di spesa</label><input placeholder="Es. 10 sensori di torbidità" value="${esc(v)}" data-b="v" autocomplete="off"></div>
+      <div><label class="sr-only">Importo in euro</label><input placeholder="€" inputmode="numeric" value="${esc(a)}" data-b="a" autocomplete="off"></div>
       <button type="button" class="rm" aria-label="Elimina questa voce">✕</button>`;
     $("budget").appendChild(d); return d;
   }
@@ -217,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function show(n) {
     step = n;
     f.querySelectorAll(".fstep").forEach(s => s.hidden = +s.dataset.s !== n);
-    [...$("stepper").children].forEach((li, i) => { li.className = i + 1 < n ? "done" : i + 1 === n ? "current" : ""; li.toggleAttribute("aria-current", i + 1 === n); });
+    [...$("stepper").children].forEach((li, i) => { li.className = i + 1 < n ? "done" : i + 1 === n ? "current" : ""; if (i + 1 === n) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current"); });
     $("prev").style.visibility = n === 1 ? "hidden" : "visible";
     $("next").textContent = n === 4 ? "Invia la candidatura" : "Continua";
     $("ferr").classList.remove("show");
@@ -266,11 +266,11 @@ document.addEventListener("DOMContentLoaded", () => {
       store.set(UCF.key("candidature"), [...store.get(UCF.key("candidature"), []), nuova]);
       clearTimeout(saveT); saveT = null;
       try { localStorage.removeItem(KEY); } catch (er) {}
-      document.querySelector(".layout-side").innerHTML = `<div class="panel" style="grid-column:1/-1;text-align:center;padding:48px">
+      document.querySelector(".layout-side").innerHTML = `<div class="panel" role="status" style="grid-column:1/-1;text-align:center;padding:48px">
         <div class="confirm-check" aria-hidden="true">✓</div>
         <h2>Candidatura inviata</h2>
         <p class="lead muted">Numero di protocollo <strong>${prot}</strong>. Abbiamo mandato una copia a <strong>${esc($("email").value)}</strong>.</p>
-        <ol style="text-align:left;max-width:520px;margin:20px auto">
+        <ol style="text-align:left;max-width:32.5rem;margin:20px auto">
           <li>Chiediamo noi la firma al tuo ${needRef() ? "docente di riferimento" : "direttore di dipartimento"}.</li>
           <li>Entro 3 settimane ricevi l'esito della valutazione.</li>
           <li>Se approvata, fissiamo un incontro per preparare insieme la campagna.</li>

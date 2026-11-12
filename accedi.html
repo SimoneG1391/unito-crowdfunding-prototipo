@@ -7,20 +7,20 @@
 <title>Accedi o registrati – UniTO Crowdfunding</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .auth { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 56px; align-items: start; margin-top: 8px; }
-  .tablist { display: flex; border-bottom: 2px solid var(--line); margin-bottom: 26px; }
-  .tablist button { flex: 1; background: none; border: 0; font: 700 1.05rem var(--f-body); padding: 14px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; }
-  .tablist button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .auth { display: grid; grid-template-columns: minmax(0, 32.5rem) minmax(0, 1fr); gap: 56px; align-items: start; margin-top: 8px; }
+  .tablist { display: flex; border-bottom: 2px solid #e2dccf; margin-bottom: 26px; }
+  .tablist button { flex: 1; background: none; border: 0; font: 700 1.05rem "Atkinson Hyperlegible", "Segoe UI", Tahoma, sans-serif; padding: 14px; cursor: pointer; color: #555c69; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .tablist button[aria-selected="true"] { color: #13233f; border-bottom-color: #d9932b; }
   .pwd { position: relative; }
-  .pwd input { padding-right: 96px; }
-  .pwd button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: var(--soft); border-radius: 6px; padding: 7px 10px; font: 700 .85rem var(--f-body); cursor: pointer; color: var(--ink); }
+  .pwd input { padding-right: 6rem; }
+  .pwd button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: #efe9de; border-radius: 6px; padding: 7px 10px; font: 700 .85rem "Atkinson Hyperlegible", "Segoe UI", Tahoma, sans-serif; cursor: pointer; color: #13233f; }
   .rules { list-style: none; padding: 0; margin: 8px 0 0; font-size: .88rem; }
-  .rules li { color: var(--muted); padding-left: 22px; position: relative; }
+  .rules li { color: #555c69; padding-left: 22px; position: relative; }
   .rules li::before { content: "○"; position: absolute; left: 2px; }
-  .rules li.ok { color: var(--ok); }
+  .rules li.ok { color: #1d7a4f; }
   .rules li.ok::before { content: "✓"; font-weight: 700; }
-  .caps { color: var(--warn); font-size: .88rem; font-weight: 700; margin-top: 6px; }
-  .demo code { background: var(--card); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); font-size: .9rem; }
+  .caps { color: #8a5a00; font-size: .88rem; font-weight: 700; margin-top: 6px; }
+  .demo code { background: #ffffff; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2dccf; font-size: .9rem; }
   .why li { margin-bottom: 10px; }
 </style>
 </head>
@@ -42,9 +42,9 @@
       </div>
 
       <!-- Accesso -->
-      <section role="tabpanel" id="pan-in" aria-labelledby="tab-in">
+      <div role="tabpanel" id="pan-in" aria-labelledby="tab-in">
         <div class="form-errors" id="in-err" role="alert" tabindex="-1"></div>
-        <form id="f-in" novalidate>
+        <form id="f-in" novalidate data-demo-errori>
           <div class="field"><label for="in-email">Email</label><input id="in-email" type="email" autocomplete="username"><span class="error-msg"></span></div>
           <div class="field"><label for="in-pwd">Password</label>
             <div class="pwd"><input id="in-pwd" type="password" autocomplete="current-password"><button type="button" data-show="in-pwd" aria-pressed="false">Mostra</button></div>
@@ -63,10 +63,10 @@
           <div style="display:flex;gap:10px"><button class="btn btn-sm" type="submit">Invia il link</button><button class="btn btn-ghost btn-sm" type="button" id="rec-annulla">Annulla</button></div>
         </form>
         <p class="small muted" style="margin:22px 0 0">Personale e studenti UniTO: usate l'email istituzionale.</p>
-      </section>
+      </div>
 
       <!-- Registrazione -->
-      <section role="tabpanel" id="pan-reg" aria-labelledby="tab-reg" hidden>
+      <div role="tabpanel" id="pan-reg" aria-labelledby="tab-reg" hidden>
         <div class="form-errors" id="reg-err" role="alert" tabindex="-1"></div>
         <form id="f-reg" novalidate>
           <fieldset style="border:0;padding:0;margin:0 0 18px">
@@ -89,7 +89,7 @@
           <div class="field"><label class="check"><input type="checkbox" id="reg-privacy"><span>Ho letto l'<a href="chi-siamo.html#privacy">informativa sulla privacy</a></span></label><span class="error-msg"></span></div>
           <button class="btn btn-block" type="submit">Crea l'account</button>
         </form>
-      </section>
+      </div>
     </div>
 
     <aside>
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (u) {
     $("auth").hidden = true;
     $("gia").hidden = false;
-    $("gia").innerHTML = `<div class="panel" style="max-width:620px"><h2 style="font-size:1.4rem">Hai già effettuato l'accesso</h2>
+    $("gia").innerHTML = `<div class="panel" style="max-width:38.75rem"><h2 style="font-size:1.4rem">Hai già effettuato l'accesso</h2>
       <p>Sei collegato come <strong>${UCF.esc(u.nome)} ${UCF.esc(u.cognome)}</strong> (${UCF.esc(u.email)}).</p>
       <div style="display:flex;gap:10px"><a class="btn" href="i-miei-progetti.html">Vai a I miei progetti</a><button class="btn btn-ghost" type="button" id="logout2">Esci</button></div></div>`;
     $("logout2").onclick = () => { UCF.logout(); location.reload(); };
@@ -198,7 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const v = $("rec-email").value;
     if (!setErr($("rec-email"), !v ? "Inserisci l'email del tuo account." : EMAIL.test(v) ? "" : "L'email non sembra completa, es. nome@esempio.it.")) return;
-    $("f-rec").innerHTML = `<p class="alert alert-ok small" style="margin:0">✓ Se esiste un account con ${UCF.esc(v)}, riceverai a breve un'email con il link per scegliere una nuova password.</p>`;
+    UCF.toast("Email di recupero inviata");
+    $("f-rec").innerHTML = `<p class="alert alert-ok small" role="status" style="margin:0">✓ Se esiste un account con ${UCF.esc(v)}, riceverai a breve un'email con il link per scegliere una nuova password.</p>`;
   });
 
   /* ---------- Registrazione ---------- */

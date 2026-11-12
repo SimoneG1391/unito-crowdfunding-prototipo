@@ -110,14 +110,14 @@
     const qui = encodeURIComponent(location.pathname.split("/").pop() + location.search);
     const n = (x) => x ? `<span class="pm-n">${x}</span>` : "";
     const voci = `
-        <li><a href="i-miei-progetti.html#sostenute">Campagne sostenute ${n(r.sost)}</a></li>
-        <li><a href="i-miei-progetti.html#seguite">Campagne seguite ${n(r.segu)}</a></li>
-        <li><a href="i-miei-progetti.html#proposte">Le mie proposte ${n(r.prop)}</a></li>`;
+        <li><a href="i-miei-progetti.html#sostenute"><span class="pm-t">Campagne sostenute</span>${n(r.sost)}</a></li>
+        <li><a href="i-miei-progetti.html#seguite"><span class="pm-t">Campagne seguite</span>${n(r.segu)}</a></li>
+        <li><a href="i-miei-progetti.html#proposte"><span class="pm-t">Le mie proposte</span>${n(r.prop)}</a></li>`;
     const menu = u
       ? `<div class="pm-head"><span class="avatar" aria-hidden="true">${esc(u.nome[0] + u.cognome[0])}</span><span><strong>${esc(u.nome)} ${esc(u.cognome)}</strong><br><span class="small muted">${esc(u.email)}</span></span></div>
         ${r.novita ? `<p class="pm-news"><span class="badge badge-new">${r.novita}</span> ${r.novita === 1 ? "novità" : "novità"} nei tuoi progetti</p>` : ""}
         <ul>${voci}</ul>
-        <ul class="pm-sep"><li><a href="i-miei-progetti.html#account">Profilo e preferenze</a></li>
+        <ul class="pm-sep"><li><a href="i-miei-progetti.html#account"><span class="pm-t">Profilo e preferenze</span></a></li>
         <li><button type="button" id="logout">Esci</button></li></ul>`
       : `<div class="pm-head pm-guest"><strong>Non hai effettuato l'accesso</strong><span class="small muted">Accedi per ritrovare i tuoi progetti su ogni dispositivo.</span>
           <a class="btn btn-sm btn-block" href="accedi.html?next=${qui}">Accedi</a>
@@ -132,7 +132,7 @@
   <span><a href="come-funziona.html#faq">Aiuto e FAQ</a> · <a href="chi-siamo.html#contatti">Contatti</a></span>
 </div></div>
 <header class="site-header"><div class="wrap">
-  <a class="brand" href="index.html" aria-label="UniTO Crowdfunding, vai alla home">
+  <a class="brand" href="index.html">
     <span class="brand-mark" aria-hidden="true">U</span>
     <span class="brand-text"><strong>UniTO Crowdfunding</strong><span>Sostieni la ricerca</span></span>
   </a>
@@ -278,13 +278,41 @@
   }
 
   /* ---------- Avvio ---------- */
+  /* ---------- Parametri dimostrativi per l'analisi di accessibilità ----------
+     Gli strumenti automatici (es. MAUVE++) aprono le pagine via URL in un browser vuoto, senza sessione.
+     Questi parametri portano la pagina direttamente nello stato da analizzare:
+       ?demo=giuseppe | ?demo=marco   accesso con un account di prova (solo per questa scheda)
+       ?menu=aperto                   menu del profilo aperto
+       ?demo=errori                   invio a vuoto del modulo principale, per mostrare i messaggi di errore
+       sostieni-*.html?id=…&demo=1    passi del sostegno e conferma già compilati (vedi sostieni.js) */
+  const DEMO = new URLSearchParams(location.search).get("demo");
+  function demoLogin() {
+    const u = { giuseppe: "giuseppe.demo@esempio.it", marco: "marco.giordano@unito.it" }[DEMO];
+    if (u && (!utente() || utente().email !== u)) login(u, "Prova2026!", false);
+  }
+  function demoStati() {
+    if (new URLSearchParams(location.search).get("menu") === "aperto") {
+      const b = document.getElementById("profile-btn"), m = document.getElementById("profile-menu");
+      if (b) { b.setAttribute("aria-expanded", "true"); m.hidden = false; }
+    }
+    if (DEMO && DEMO.startsWith("errori")) {
+      // dopo che gli script della pagina hanno collegato i loro gestori
+      setTimeout(() => {
+        const f = document.querySelector(DEMO === "errori-reg" ? "#f-reg" : "form[data-demo-errori]");
+        if (f) f.requestSubmit();
+      }, 300);
+    }
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     seed();
+    demoLogin();
     const page = document.body.dataset.page || "";
     const top = document.createElement("div"); top.id = "site-header-slot"; top.innerHTML = header(page);
     document.body.prepend(top);
     initProfileMenu();
     document.body.insertAdjacentHTML("beforeend", footer());
+    window.addEventListener("load", demoStati);
 
     document.addEventListener("click", (e) => {
       if (e.target.id !== "logout") return;

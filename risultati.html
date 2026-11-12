@@ -7,9 +7,9 @@
 <title>Risultati – UniTO Crowdfunding</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .res { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 28px; margin-bottom: 24px; box-shadow: var(--shadow); border-left: 6px solid var(--tc); }
+  .res { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; background: #ffffff; border: 1px solid #e2dccf; border-radius: 10px; padding: 28px; margin-bottom: 24px; box-shadow: 0 1px 2px rgba(19,35,63,.06), 0 6px 18px rgba(19,35,63,.07); border-left: 6px solid var(--tc); }
   .res h3 { font-size: 1.4rem; }
-  .big-n { font: 700 2.4rem var(--f-display); display: block; }
+  .big-n { font: 700 2.4rem "Fraunces", Georgia, "Times New Roman", serif; display: block; }
 </style>
 </head>
 <body data-page="risultati">
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const tot = c.fondi.reduce((s, f) => s + f[1], 0);
     return `<article class="res" style="--tc:${TEMI[c.tema].colore}">
       <div>
-        <span class="tag" style="--tc:${TEMI[c.tema].colore};border:1px solid var(--line)">${TEMI[c.tema].nome}</span>
+        <span class="tag" style="--tc:${TEMI[c.tema].colore};border:1px solid #e2dccf">${TEMI[c.tema].nome}</span>
         <h3 style="margin-top:10px">${esc(c.titolo)}</h3>
         <p class="muted small">${esc(c.dipartimento)} · Responsabile: ${esc(c.responsabile.nome)}</p>
         ${progress(c)}

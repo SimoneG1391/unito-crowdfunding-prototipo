@@ -1,9 +1,9 @@
 /* Dati di esempio del prototipo (campagne di fantasia). Nessuna richiesta di rete: tutto è qui. */
 window.TEMI = {
-  ambiente:   { nome: "Ambiente",   colore: "var(--t-ambiente)" },
-  salute:     { nome: "Salute",     colore: "var(--t-salute)" },
-  tecnologia: { nome: "Tecnologia", colore: "var(--t-tecnologia)" },
-  societa:    { nome: "Società",    colore: "var(--t-societa)" }
+  ambiente:   { nome: "Ambiente",   colore: "#2f7d5b" },
+  salute:     { nome: "Salute",     colore: "#8a4b7d" },
+  tecnologia: { nome: "Tecnologia", colore: "#2f6fa3" },
+  societa:    { nome: "Società",    colore: "#b0602a" }
 };
 
 window.CAMPAGNE = [

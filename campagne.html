@@ -16,18 +16,19 @@
     <p class="lead">Cerca per parola chiave o filtra per tema e stato. Ogni campagna è proposta da personale o studenti dell'Università di Torino e verificata dall'Ufficio Fundraising.</p>
   </header>
 
-  <form id="filtri" onsubmit="return false">
+  <form id="filtri" role="search">
     <div class="toolbar">
       <div>
         <label for="q">Cerca una campagna</label>
         <div class="field-search">
           <input id="q" type="search" placeholder="Titolo, tema o dipartimento" autocomplete="off">
-          <button type="button" id="clear" aria-label="Cancella la ricerca" hidden>✕ Cancella</button>
+          <button type="submit" class="search-go">Cerca</button>
+          <button type="button" id="clear" hidden><span aria-hidden="true">✕</span> Cancella</button>
         </div>
       </div>
       <div>
         <label for="ordina">Ordina per</label>
-        <select id="ordina">
+        <select id="ordina" autocomplete="off">
           <option value="scadenza">In scadenza</option>
           <option value="vicine">Più vicine all'obiettivo</option>
           <option value="recenti">Più recenti</option>
@@ -42,9 +43,10 @@
   </form>
 
   <div class="result-info">
-    <p id="conteggio" aria-live="polite" style="margin:0"></p>
+    <p id="conteggio" aria-live="polite" tabindex="-1" style="margin:0"></p>
     <button class="linkbtn" id="reset" type="button" hidden>Azzera i filtri</button>
   </div>
+  <h2 id="h-lista" class="sr-only">Elenco delle campagne</h2>
   <div class="cards" id="lista"></div>
   <div class="empty" id="vuoto" hidden>
     <h2 style="font-size:1.4rem">Nessuna campagna trovata</h2>
@@ -107,6 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("input[name=stato][value=tutte]").checked = true;
     render(); $("q").focus();
   }
+  // Il filtro è immediato, ma il pulsante Cerca permette di confermare e porta il focus sui risultati (H32)
+  $("filtri").addEventListener("submit", (e) => { e.preventDefault(); render(); $("conteggio").focus(); });
   $("filtri").addEventListener("input", render);
   $("filtri").addEventListener("change", render);
   $("clear").addEventListener("click", () => { $("q").value = ""; render(); $("q").focus(); });

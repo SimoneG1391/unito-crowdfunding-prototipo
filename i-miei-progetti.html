@@ -7,24 +7,24 @@
 <title>I miei progetti – UniTO Crowdfunding</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .mine { display: grid; grid-template-columns: 8px minmax(0, 1fr) 300px; gap: 0 24px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; scroll-margin-top: 110px; }
+  .mine { display: grid; grid-template-columns: 0.5rem minmax(0, 1fr) 18.75rem; gap: 0 24px; background: #ffffff; border: 1px solid #e2dccf; border-radius: 10px; box-shadow: 0 1px 2px rgba(19,35,63,.06), 0 6px 18px rgba(19,35,63,.07); margin-bottom: 20px; overflow: hidden; scroll-margin-top: 110px; }
   .mine .stripe { background: var(--tc); }
   .mine .main { padding: 22px 0; }
   .mine .side { padding: 22px 24px 22px 0; display: flex; flex-direction: column; gap: 10px; }
   .mine h3 { font-size: 1.35rem; margin: 6px 0 4px; }
-  .last-up { background: var(--paper); border-radius: 8px; padding: 12px 16px; margin-top: 14px; }
-  .last-up time { font-size: .85rem; color: var(--muted); font-weight: 700; }
-  .area-tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--line); margin-bottom: 28px; }
-  .area-tabs button { background: none; border: 0; font: 700 1rem var(--f-body); padding: 14px 18px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; display: flex; gap: 8px; align-items: center; }
-  .area-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
-  .area-tabs .n { background: var(--soft); border-radius: 999px; padding: 0 8px; font-size: .8rem; }
+  .last-up { background: #f8f5ef; border-radius: 8px; padding: 12px 16px; margin-top: 14px; }
+  .last-up time { font-size: .85rem; color: #555c69; font-weight: 700; }
+  .area-tabs { display: flex; gap: 4px; border-bottom: 2px solid #e2dccf; margin-bottom: 28px; }
+  .area-tabs button { background: none; border: 0; font: 700 1rem "Atkinson Hyperlegible", "Segoe UI", Tahoma, sans-serif; padding: 14px 18px; cursor: pointer; color: #555c69; border-bottom: 3px solid transparent; margin-bottom: -2px; display: flex; gap: 8px; align-items: center; }
+  .area-tabs button[aria-selected="true"] { color: #13233f; border-bottom-color: #d9932b; }
+  .area-tabs .n { background: #efe9de; border-radius: 999px; padding: 0 8px; font-size: .8rem; }
   .who-bar { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-  .prop { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 24px 26px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  .prop { background: #ffffff; border: 1px solid #e2dccf; border-radius: 10px; padding: 24px 26px; margin-bottom: 18px; box-shadow: 0 1px 2px rgba(19,35,63,.06), 0 6px 18px rgba(19,35,63,.07); }
   .prop-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
   .prop .stepper { margin: 22px 0 14px; }
   .prop .stepper li { font-size: .9rem; }
-  .prop .stepper li.fail { color: var(--err); }
-  .prop .stepper li.fail::before { content: "✕"; background: var(--err); border-color: var(--err); color: #fff; }
+  .prop .stepper li.fail { color: #b42318; }
+  .prop .stepper li.fail::before { content: "✕"; background: #b42318; border-color: #b42318; color: #fff; }
 </style>
 </head>
 <body data-page="miei">
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `<article class="mine" id="p-${id}" style="--tc:${t.colore}">
       <div class="stripe" aria-hidden="true"></div>
       <div class="main">
-        <span class="tag" style="--tc:${t.colore};border:1px solid var(--line)">${t.nome}</span>
+        <span class="tag" style="--tc:${t.colore};border:1px solid #e2dccf">${t.nome}</span>
         <h3><a href="progetto.html?id=${id}" style="color:inherit">${esc(c.titolo)}</a></h3>
         <p class="muted small" style="margin:0">${miei.length ? miei.map(d => `Hai donato ${euro(d.importo)} il ${data(d.data)}`).join(" · ") : "Segui il progetto senza aver donato"}</p>
         ${up ? `<div class="last-up">${nuovo ? '<span class="badge badge-new">Nuovo</span> ' : ""}<time datetime="${up.data}">Ultimo aggiornamento · ${data(up.data)}</time>
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!sostenuti.length) return vuoto("Non hai ancora sostenuto nessuna campagna", "Quando contribuisci, qui trovi il progetto, la ricevuta e gli aggiornamenti.",
         `<a class="btn" href="campagne.html?stato=in-corso">Scegli una campagna</a>${u ? "" : `<a class="btn btn-ghost" href="accedi.html?next=i-miei-progetti.html">Hai già donato? Accedi</a>`}`);
       const tot = don.reduce((s, d) => s + d.importo, 0);
-      return `<p class="muted">${don.length} ${don.length === 1 ? "contributo" : "contributi"} per un totale di <strong style="color:var(--ink)">${euro(tot)}</strong>.</p>${sostenuti.map(card).join("")}`;
+      return `<p class="muted">${don.length} ${don.length === 1 ? "contributo" : "contributi"} per un totale di <strong style="color:#13233f">${euro(tot)}</strong>.</p>${sostenuti.map(card).join("")}`;
     },
     seguite: () => seguiti.length ? seguiti.map(card).join("")
       : vuoto("Non segui altre campagne", "Premi “Segui il progetto” nella scheda di una campagna per ricevere gli aggiornamenti senza donare.", `<a class="btn" href="campagne.html">Esplora le campagne</a>`),
@@ -152,14 +152,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <label class="check"><input type="checkbox" checked disabled><span>Conferme e ricevute dei contributi<span class="hint">Necessarie, non si possono disattivare.</span></span></label>
           <label class="check"><input type="checkbox" id="pref-agg" ${store.get(key("pref_agg"), true) ? "checked" : ""}><span>Aggiornamenti dei progetti che segui<span class="hint">Al massimo uno al mese per progetto.</span></span></label>
           <p class="small muted" id="pref-msg" aria-live="polite"></p></div></div>`
-      : `<div class="panel" style="max-width:640px"><h2 style="font-size:1.3rem">Accedi al tuo account</h2>
+      : `<div class="panel" style="max-width:40rem"><h2 style="font-size:1.3rem">Accedi al tuo account</h2>
           <p>Con un account ritrovi i progetti su qualsiasi dispositivo; i contributi fatti da questo browser verranno collegati automaticamente.</p>
           <div style="display:flex;gap:10px"><a class="btn" href="accedi.html?next=i-miei-progetti.html">Accedi</a><a class="btn btn-ghost" href="accedi.html?next=i-miei-progetti.html#registrati">Crea un account</a></div></div>`
   };
 
   function show(k, focus) {
     document.querySelectorAll("#tabs button").forEach(b => { const on = b.dataset.k === k; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; if (on) $("pannello").setAttribute("aria-labelledby", b.id); });
-    $("pannello").innerHTML = render[k]();
+    // Titolo h2 (nascosto) per ogni scheda: evita il salto h1 → h3 nelle card
+    $("pannello").innerHTML = `<h2 class="sr-only">${TABS.find(t => t[0] === k)[1]}</h2>` + render[k]();
     try { history.replaceState(null, "", "#" + k); } catch (e) {}
     bind(); UCF.animateBars($("pannello"));
     if (focus) document.getElementById("t-" + k).focus();
