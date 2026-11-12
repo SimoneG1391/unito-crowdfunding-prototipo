@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Accedi o registrati – UniTO Crowdfunding</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .auth { display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 56px; align-items: start; margin-top: 8px; }
+  .tablist { display: flex; border-bottom: 2px solid var(--line); margin-bottom: 26px; }
+  .tablist button { flex: 1; background: none; border: 0; font: 700 1.05rem var(--f-body); padding: 14px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; }
+  .tablist button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .pwd { position: relative; }
+  .pwd input { padding-right: 96px; }
+  .pwd button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: var(--soft); border-radius: 6px; padding: 7px 10px; font: 700 .85rem var(--f-body); cursor: pointer; color: var(--ink); }
+  .rules { list-style: none; padding: 0; margin: 8px 0 0; font-size: .88rem; }
+  .rules li { color: var(--muted); padding-left: 22px; position: relative; }
+  .rules li::before { content: "○"; position: absolute; left: 2px; }
+  .rules li.ok { color: var(--ok); }
+  .rules li.ok::before { content: "✓"; font-weight: 700; }
+  .caps { color: var(--warn); font-size: .88rem; font-weight: 700; margin-top: 6px; }
+  .demo code { background: var(--card); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line); font-size: .9rem; }
+  .why li { margin-bottom: 10px; }
+</style>
+</head>
+<body data-page="miei">
+<main id="main" class="wrap">
+  <nav class="crumbs" aria-label="Percorso"><ol><li><a href="index.html">Home</a></li><li aria-current="page">Accedi o registrati</li></ol></nav>
+  <header class="page-head" style="margin-bottom:24px">
+    <h1>Accedi o registrati</h1>
+    <p class="lead">L'account è facoltativo per donare. Ti serve per ritrovare su qualsiasi dispositivo le campagne che sostieni e, se fai parte dell'Università, per seguire le tue proposte.</p>
+  </header>
+
+  <div id="gia" hidden></div>
+
+  <div class="auth" id="auth">
+    <div class="panel">
+      <div class="tablist" role="tablist" aria-label="Accesso o registrazione">
+        <button role="tab" id="tab-in" aria-selected="true" aria-controls="pan-in">Accedi</button>
+        <button role="tab" id="tab-reg" aria-selected="false" aria-controls="pan-reg" tabindex="-1">Crea un account</button>
+      </div>
+
+      <!-- Accesso -->
+      <section role="tabpanel" id="pan-in" aria-labelledby="tab-in">
+        <div class="form-errors" id="in-err" role="alert" tabindex="-1"></div>
+        <form id="f-in" novalidate>
+          <div class="field"><label for="in-email">Email</label><input id="in-email" type="email" autocomplete="username"><span class="error-msg"></span></div>
+          <div class="field"><label for="in-pwd">Password</label>
+            <div class="pwd"><input id="in-pwd" type="password" autocomplete="current-password"><button type="button" data-show="in-pwd" aria-pressed="false">Mostra</button></div>
+            <p class="caps" id="in-caps" hidden>⇪ Il blocco maiuscole è attivo</p>
+            <span class="error-msg"></span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px">
+            <label class="check" style="margin:0"><input type="checkbox" id="ricorda" checked><span>Resta collegato su questo dispositivo</span></label>
+            <button type="button" class="linkbtn small" id="dimenticata">Password dimenticata?</button>
+          </div>
+          <button class="btn btn-block" type="submit">Accedi</button>
+        </form>
+        <form id="f-rec" class="panel-soft" hidden style="margin-top:20px" novalidate>
+          <h2 style="font-size:1.15rem">Recupera la password</h2>
+          <p class="small muted">Ti inviamo un link per sceglierne una nuova.</p>
+          <div class="field"><label for="rec-email">Email dell'account</label><input id="rec-email" type="email"><span class="error-msg"></span></div>
+          <div style="display:flex;gap:10px"><button class="btn btn-sm" type="submit">Invia il link</button><button class="btn btn-ghost btn-sm" type="button" id="rec-annulla">Annulla</button></div>
+        </form>
+        <p class="small muted" style="margin:22px 0 0">Personale e studenti UniTO: usate l'email istituzionale.</p>
+      </section>
+
+      <!-- Registrazione -->
+      <section role="tabpanel" id="pan-reg" aria-labelledby="tab-reg" hidden>
+        <div class="form-errors" id="reg-err" role="alert" tabindex="-1"></div>
+        <form id="f-reg" novalidate>
+          <fieldset style="border:0;padding:0;margin:0 0 18px">
+            <legend class="label">Chi sei?</legend>
+            <div class="options" style="grid-template-columns:1fr 1fr">
+              <div class="opt"><input type="radio" name="ruolo" id="r-sost" value="sostenitore" checked><label for="r-sost"><span class="radio" aria-hidden="true"></span><span class="what"><strong>Sostenitore</strong><span class="hint">Voglio seguire le campagne</span></span></label></div>
+              <div class="opt"><input type="radio" name="ruolo" id="r-unito" value="unito"><label for="r-unito"><span class="radio" aria-hidden="true"></span><span class="what"><strong>Personale o studente UniTO</strong><span class="hint">Voglio anche proporre campagne</span></span></label></div>
+            </div>
+          </fieldset>
+          <div class="row2">
+            <div class="field"><label for="reg-nome">Nome</label><input id="reg-nome" autocomplete="given-name"><span class="error-msg"></span></div>
+            <div class="field"><label for="reg-cognome">Cognome</label><input id="reg-cognome" autocomplete="family-name"><span class="error-msg"></span></div>
+          </div>
+          <div class="field"><label for="reg-email">Email<span class="hint" id="reg-email-hint">La userai per accedere.</span></label><input id="reg-email" type="email" autocomplete="email"><span class="error-msg"></span></div>
+          <div class="field"><label for="reg-pwd">Password</label>
+            <div class="pwd"><input id="reg-pwd" type="password" autocomplete="new-password" aria-describedby="regole"><button type="button" data-show="reg-pwd" aria-pressed="false">Mostra</button></div>
+            <ul class="rules" id="regole"><li data-r="len">Almeno 8 caratteri</li><li data-r="num">Almeno un numero</li><li data-r="up">Almeno una lettera maiuscola</li></ul>
+            <span class="error-msg"></span></div>
+          <div class="field"><label for="reg-pwd2">Ripeti la password</label><input id="reg-pwd2" type="password" autocomplete="new-password"><span class="error-msg"></span></div>
+          <div class="field"><label class="check"><input type="checkbox" id="reg-privacy"><span>Ho letto l'<a href="chi-siamo.html#privacy">informativa sulla privacy</a></span></label><span class="error-msg"></span></div>
+          <button class="btn btn-block" type="submit">Crea l'account</button>
+        </form>
+      </section>
+    </div>
+
+    <aside>
+      <div class="panel-soft">
+        <h2 style="font-size:1.3rem">Con un account puoi</h2>
+        <ul class="why" style="padding-left:20px">
+          <li>ritrovare <strong>le campagne sostenute</strong> e le ricevute, da qualsiasi dispositivo;</li>
+          <li>vedere subito <strong>le novità</strong> dei progetti che segui;</li>
+          <li>donare più in fretta, con i dati già compilati;</li>
+          <li>se fai parte di UniTO, <strong>seguire lo stato delle tue proposte</strong>.</li>
+        </ul>
+        <p class="small muted" style="margin:0">I contributi fatti da questo browser senza account verranno collegati al tuo account quando accedi.</p>
+      </div>
+      <div class="panel demo" style="margin-top:20px">
+        <h2 style="font-size:1.1rem">Account di prova (prototipo)</h2>
+        <p class="small muted">Accesso simulato: i dati restano in questo browser. Non usare password reali.</p>
+        <p class="small" style="margin-bottom:6px"><strong>Giuseppe, sostenitore</strong><br><code>giuseppe.demo@esempio.it</code> · <code>Prova2026!</code></p>
+        <button class="btn btn-ghost btn-sm" type="button" data-demo="giuseppe.demo@esempio.it">Compila con questo account</button>
+        <p class="small" style="margin:16px 0 6px"><strong>Marco, ricercatore UniTO</strong><br><code>marco.giordano@unito.it</code> · <code>Prova2026!</code></p>
+        <button class="btn btn-ghost btn-sm" type="button" data-demo="marco.giordano@unito.it">Compila con questo account</button>
+      </div>
+    </aside>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  // Pagina di ritorno: solo pagine di questo sito (niente redirect verso l'esterno)
+  const nextRaw = UCF.qs("next") || "";
+  const next = /^[a-z0-9-]+\.html(\?[\w=&%.-]*)?$/i.test(nextRaw) && !/^accedi\.html/.test(nextRaw) ? nextRaw : "i-miei-progetti.html";
+
+  const u = UCF.utente();
+  if (u) {
+    $("auth").hidden = true;
+    $("gia").hidden = false;
+    $("gia").innerHTML = `<div class="panel" style="max-width:620px"><h2 style="font-size:1.4rem">Hai già effettuato l'accesso</h2>
+      <p>Sei collegato come <strong>${UCF.esc(u.nome)} ${UCF.esc(u.cognome)}</strong> (${UCF.esc(u.email)}).</p>
+      <div style="display:flex;gap:10px"><a class="btn" href="i-miei-progetti.html">Vai a I miei progetti</a><button class="btn btn-ghost" type="button" id="logout2">Esci</button></div></div>`;
+    $("logout2").onclick = () => { UCF.logout(); location.reload(); };
+    return;
+  }
+
+  function setErr(el, msg) {
+    const fl = el.closest(".field"); fl.classList.toggle("has-error", !!msg);
+    el.setAttribute("aria-invalid", !!msg); fl.querySelector(".error-msg").textContent = msg || ""; return !msg;
+  }
+  function summary(box, errs) {
+    if (!errs.length) { box.classList.remove("show"); return; }
+    box.innerHTML = `<strong>Controlla ${errs.length === 1 ? "questo campo" : "questi campi"}:</strong><ul style="margin:6px 0 0">${errs.map(([id, m]) => `<li><a href="#${id}">${m}</a></li>`).join("")}</ul>`;
+    box.classList.add("show"); box.focus();
+  }
+  document.querySelectorAll(".form-errors").forEach(b => b.addEventListener("click", e => { const a = e.target.closest("a"); if (a) { e.preventDefault(); $(a.getAttribute("href").slice(1)).focus(); } }));
+
+  /* ---------- Schede accessibili (frecce sinistra/destra) ---------- */
+  const tabs = [$("tab-in"), $("tab-reg")];
+  function selTab(t, focus) {
+    tabs.forEach(x => { const on = x === t; x.setAttribute("aria-selected", on); x.tabIndex = on ? 0 : -1; $(x.getAttribute("aria-controls")).hidden = !on; });
+    if (focus) t.focus();
+  }
+  tabs.forEach((t, i) => {
+    t.onclick = () => selTab(t);
+    t.onkeydown = (e) => { if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); selTab(tabs[(i + 1) % 2], true); } };
+  });
+  if (location.hash === "#registrati") selTab($("tab-reg"));
+
+  /* ---------- Mostra/nascondi password e blocco maiuscole ---------- */
+  document.querySelectorAll("[data-show]").forEach(b => b.onclick = () => {
+    const i = $(b.dataset.show), show = i.type === "password";
+    i.type = show ? "text" : "password"; b.textContent = show ? "Nascondi" : "Mostra"; b.setAttribute("aria-pressed", show);
+  });
+  $("in-pwd").addEventListener("keyup", e => { if (e.getModifierState) $("in-caps").hidden = !e.getModifierState("CapsLock"); });
+
+  /* ---------- Accesso ---------- */
+  let tentativi = 0;
+  $("f-in").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const em = $("in-email"), pw = $("in-pwd");
+    const errs = [];
+    if (!setErr(em, !em.value ? "Inserisci l'email con cui ti sei registrato." : EMAIL.test(em.value) ? "" : "L'email non sembra completa, es. nome@esempio.it.")) errs.push(["in-email", em.closest(".field").querySelector(".error-msg").textContent]);
+    if (!setErr(pw, pw.value ? "" : "Inserisci la password.")) errs.push(["in-pwd", "Inserisci la password."]);
+    if (errs.length) return summary($("in-err"), errs);
+    const r = UCF.login(em.value, pw.value, $("ricorda").checked);
+    if (!r) {
+      tentativi++;
+      // Messaggio unico: non diciamo quale dei due è sbagliato (sicurezza), ma diamo una via d'uscita
+      $("in-err").innerHTML = `<strong>Email o password non corretti.</strong> Controlla di aver scritto bene l'email e che il blocco maiuscole sia disattivato.${tentativi > 1 ? ` <button type="button" class="linkbtn" id="vai-rec">Hai dimenticato la password?</button>` : ""}`;
+      $("in-err").classList.add("show"); $("in-err").focus();
+      const vr = $("vai-rec"); if (vr) vr.onclick = () => $("dimenticata").click();
+      pw.value = "";
+      return;
+    }
+    UCF.store.sset("ucf_benvenuto", `Bentornato, ${r.utente.nome}!${r.collegati ? " Abbiamo collegato al tuo account i progetti di questo browser." : ""}`);
+    const b = e.submitter || $("f-in").querySelector("button[type=submit]");
+    b.disabled = true; b.innerHTML = '<span class="spinner" aria-hidden="true"></span> Accesso in corso…';
+    setTimeout(() => location.href = next, 700);
+  });
+  ["in-email", "in-pwd"].forEach(id => $(id).addEventListener("input", () => { $(id).closest(".has-error") && setErr($(id), ""); }));
+
+  /* ---------- Recupero password (simulato) ---------- */
+  $("dimenticata").onclick = () => { $("f-rec").hidden = false; $("rec-email").value = $("in-email").value; $("rec-email").focus(); };
+  $("rec-annulla").onclick = () => { $("f-rec").hidden = true; $("dimenticata").focus(); };
+  $("f-rec").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const v = $("rec-email").value;
+    if (!setErr($("rec-email"), !v ? "Inserisci l'email del tuo account." : EMAIL.test(v) ? "" : "L'email non sembra completa, es. nome@esempio.it.")) return;
+    $("f-rec").innerHTML = `<p class="alert alert-ok small" style="margin:0">✓ Se esiste un account con ${UCF.esc(v)}, riceverai a breve un'email con il link per scegliere una nuova password.</p>`;
+  });
+
+  /* ---------- Registrazione ---------- */
+  const regole = { len: v => v.length >= 8, num: v => /\d/.test(v), up: v => /[A-Z]/.test(v) };
+  const isUnito = () => $("r-unito").checked;
+  $("f-reg").addEventListener("change", (e) => {
+    if (e.target.name === "ruolo") $("reg-email-hint").textContent = isUnito() ? "Usa l'email istituzionale (@unito.it o @edu.unito.it)." : "La userai per accedere.";
+  });
+  $("reg-pwd").addEventListener("input", (e) => {
+    document.querySelectorAll("#regole li").forEach(li => li.classList.toggle("ok", regole[li.dataset.r](e.target.value)));
+  });
+  const regRules = {
+    "reg-nome": v => v.trim() ? "" : "Scrivi il tuo nome.",
+    "reg-cognome": v => v.trim() ? "" : "Scrivi il tuo cognome.",
+    "reg-email": v => !v ? "Inserisci l'email: la userai per accedere." : !EMAIL.test(v) ? "L'email non sembra completa, es. nome@esempio.it."
+      : isUnito() && !/@(edu\.)?unito\.it$/i.test(v) ? "Per proporre campagne serve l'email istituzionale (@unito.it o @edu.unito.it)." : "",
+    "reg-pwd": v => Object.values(regole).every(f => f(v)) ? "" : "La password non rispetta ancora tutte le regole indicate sotto.",
+    "reg-pwd2": v => !v ? "Ripeti la password per evitare errori di battitura." : v === $("reg-pwd").value ? "" : "Le due password non coincidono.",
+    "reg-privacy": () => $("reg-privacy").checked ? "" : "Conferma di aver letto l'informativa sulla privacy."
+  };
+  $("f-reg").addEventListener("focusout", (e) => { const f = regRules[e.target.id]; if (f && e.target.value && e.target.type !== "checkbox") setErr(e.target, f(e.target.value)); });
+  $("f-reg").addEventListener("input", (e) => { const f = regRules[e.target.id]; if (f && e.target.closest(".has-error")) setErr(e.target, f(e.target.value)); });
+  $("f-reg").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const errs = [];
+    Object.entries(regRules).forEach(([id, f]) => { const el = $(id); const m = f(el.value); setErr(el, m); if (m) errs.push([id, m]); });
+    if (errs.length) return summary($("reg-err"), errs);
+    const dati = { nome: $("reg-nome").value.trim(), cognome: $("reg-cognome").value.trim(), email: $("reg-email").value.trim(), pwd: $("reg-pwd").value, ruolo: isUnito() ? "unito" : "sostenitore" };
+    if (!UCF.registra(dati)) {
+      setErr($("reg-email"), "Esiste già un account con questa email.");
+      $("reg-err").innerHTML = `<strong>Esiste già un account con questa email.</strong> <button type="button" class="linkbtn" id="vai-in">Accedi</button> oppure recupera la password.`;
+      $("reg-err").classList.add("show"); $("reg-err").focus();
+      $("vai-in").onclick = () => { selTab($("tab-in")); $("in-email").value = dati.email; $("in-pwd").focus(); };
+      return;
+    }
+    const r = UCF.login(dati.email, dati.pwd);
+    UCF.store.sset("ucf_benvenuto", `Account creato. Benvenuto, ${dati.nome}!${r.collegati ? " Abbiamo collegato i progetti di questo browser." : ""}`);
+    location.href = next;
+  });
+
+  /* ---------- Account di prova ---------- */
+  document.querySelectorAll("[data-demo]").forEach(b => b.onclick = () => {
+    selTab($("tab-in")); $("in-email").value = b.dataset.demo; $("in-pwd").value = "Prova2026!";
+    UCF.toast("Dati di prova inseriti: premi Accedi"); $("f-in").querySelector("button[type=submit]").focus();
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>I miei progetti – UniTO Crowdfunding</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .mine { display: grid; grid-template-columns: 8px minmax(0, 1fr) 300px; gap: 0 24px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden; scroll-margin-top: 110px; }
+  .mine .stripe { background: var(--tc); }
+  .mine .main { padding: 22px 0; }
+  .mine .side { padding: 22px 24px 22px 0; display: flex; flex-direction: column; gap: 10px; }
+  .mine h3 { font-size: 1.35rem; margin: 6px 0 4px; }
+  .last-up { background: var(--paper); border-radius: 8px; padding: 12px 16px; margin-top: 14px; }
+  .last-up time { font-size: .85rem; color: var(--muted); font-weight: 700; }
+  .area-tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--line); margin-bottom: 28px; }
+  .area-tabs button { background: none; border: 0; font: 700 1rem var(--f-body); padding: 14px 18px; cursor: pointer; color: var(--muted); border-bottom: 3px solid transparent; margin-bottom: -2px; display: flex; gap: 8px; align-items: center; }
+  .area-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .area-tabs .n { background: var(--soft); border-radius: 999px; padding: 0 8px; font-size: .8rem; }
+  .who-bar { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .prop { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 24px 26px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  .prop-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+  .prop .stepper { margin: 22px 0 14px; }
+  .prop .stepper li { font-size: .9rem; }
+  .prop .stepper li.fail { color: var(--err); }
+  .prop .stepper li.fail::before { content: "✕"; background: var(--err); border-color: var(--err); color: #fff; }
+</style>
+</head>
+<body data-page="miei">
+<main id="main" class="wrap">
+  <nav class="crumbs" aria-label="Percorso"><ol><li><a href="index.html">Home</a></li><li aria-current="page">I miei progetti</li></ol></nav>
+  <header class="page-head who-bar" id="testa"></header>
+  <div id="avviso"></div>
+  <div class="area-tabs" role="tablist" aria-label="Sezioni dell'area personale" id="tabs"></div>
+  <div id="pannello" role="tabpanel" tabindex="-1"></div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, euro, data, esc, campagna, progress, key } = UCF;
+  const $ = (id) => document.getElementById(id);
+  const u = UCF.utente();
+  const visitaSalvata = store.get(key("ultima_visita"), null);
+  const ultimaVisita = visitaSalvata || "2000-01-01";
+  const don = store.get(key("donazioni"), []);
+  const seg = store.get(key("seguiti"), []);
+  const cand = u ? store.get(key("candidature"), []) : [];
+  const bozza = store.get("ucf_candidatura", null);
+  const sostenuti = [...new Set(don.map(d => d.id))];
+  const seguiti = seg.filter(id => !sostenuti.includes(id));
+  const nuovi = (ids) => ids.reduce((n, id) => n + campagna(id).aggiornamenti.filter(x => x.data > ultimaVisita).length, 0);
+
+  /* ---------- Intestazione ---------- */
+  $("testa").innerHTML = u
+    ? `<div><p class="eyebrow">Area personale</p><h1>I miei progetti</h1>
+        <p class="lead" style="margin:0">Ciao ${esc(u.nome)}: qui trovi le campagne che sostieni e segui${u.ruolo === "unito" ? " e le tue proposte" : ""}.</p></div>
+       <div class="person"><div class="avatar" aria-hidden="true">${esc(u.nome[0] + u.cognome[0])}</div>
+        <div><strong>${esc(u.nome)} ${esc(u.cognome)}</strong><br><span class="small muted">${esc(u.email)}</span><br>
+        <button class="linkbtn small" type="button" id="esci">Esci</button></div></div>`
+    : `<div><p class="eyebrow">La tua area</p><h1>I miei progetti</h1>
+        <p class="lead" style="margin:0">Le campagne che hai sostenuto o che segui da questo browser.</p></div>
+       <div style="display:flex;gap:10px;flex:none"><a class="btn" href="accedi.html?next=i-miei-progetti.html">Accedi</a><a class="btn btn-ghost" href="accedi.html?next=i-miei-progetti.html#registrati">Crea un account</a></div>`;
+  if (!u) $("avviso").innerHTML = `<div class="alert alert-info"><span><strong>Non hai effettuato l'accesso.</strong> Vedi solo quello che hai fatto da questo browser. Accedi per ritrovare i tuoi progetti su qualsiasi dispositivo e, se fai parte di UniTO, per seguire le tue proposte.</span></div>`;
+  const nn = nuovi([...sostenuti, ...seguiti]);
+  if (nn) $("avviso").insertAdjacentHTML("beforeend", `<div class="alert alert-ok"><span><strong>${nn} novità</strong> ${visitaSalvata ? `dalla tua ultima visita (${data(visitaSalvata)})` : "nei progetti che segui"}, segnate con “Nuovo”.</span></div>`);
+  const esci = $("esci"); if (esci) esci.onclick = () => { UCF.logout(); location.href = "index.html"; };
+
+  /* ---------- Schede ---------- */
+  const TABS = [
+    ["sostenute", "Campagne sostenute", sostenuti.length],
+    ["seguite", "Campagne seguite", seguiti.length],
+    ["proposte", "Le mie proposte", cand.length + (bozza ? 1 : 0)],
+    ["account", u ? "Account" : "Accedi", null]
+  ];
+  $("tabs").innerHTML = TABS.map(([k, l, n]) => `<button role="tab" id="t-${k}" aria-controls="pannello" aria-selected="false" tabindex="-1" data-k="${k}">${l}${n !== null ? ` <span class="n">${n}</span>` : ""}</button>`).join("");
+
+  function card(id) {
+    const c = campagna(id), t = TEMI[c.tema];
+    const miei = don.filter(d => d.id === id);
+    const up = c.aggiornamenti[0], nuovo = up && up.data > ultimaVisita;
+    return `<article class="mine" id="p-${id}" style="--tc:${t.colore}">
+      <div class="stripe" aria-hidden="true"></div>
+      <div class="main">
+        <span class="tag" style="--tc:${t.colore};border:1px solid var(--line)">${t.nome}</span>
+        <h3><a href="progetto.html?id=${id}" style="color:inherit">${esc(c.titolo)}</a></h3>
+        <p class="muted small" style="margin:0">${miei.length ? miei.map(d => `Hai donato ${euro(d.importo)} il ${data(d.data)}`).join(" · ") : "Segui il progetto senza aver donato"}</p>
+        ${up ? `<div class="last-up">${nuovo ? '<span class="badge badge-new">Nuovo</span> ' : ""}<time datetime="${up.data}">Ultimo aggiornamento · ${data(up.data)}</time>
+          <p style="margin:4px 0 0"><strong>${esc(up.titolo)}${/[.!?]$/.test(up.titolo) ? "" : "."}</strong> ${esc(up.testo)}</p>
+          <a href="progetto.html?id=${id}#aggiornamento-${c.aggiornamenti.length}">Leggi l'aggiornamento →</a></div>`
+          : `<div class="last-up"><span class="muted small">Nessun aggiornamento pubblicato finora.</span></div>`}
+      </div>
+      <div class="side">
+        ${progress(c)}
+        ${c.risultati ? `<p class="small" style="margin:0"><strong>Risultati:</strong> ${esc(c.risultati)}</p>` : ""}
+        <div style="margin-top:auto;display:flex;gap:8px;flex-wrap:wrap">
+          ${c.stato === "in-corso" ? `<a class="btn btn-sm" href="sostieni.html?id=${id}">${miei.length ? "Dona ancora" : "Sostieni"}</a>` : ""}
+          ${seg.includes(id) ? `<button class="btn btn-ghost btn-sm" data-unfollow="${id}">Smetti di seguire</button>` : `<button class="btn btn-ghost btn-sm" data-follow="${id}">Segui gli aggiornamenti</button>`}
+        </div>
+        ${miei.filter(d => d.fiscale).map(d => `<button class="linkbtn small" style="text-align:left" data-ric="${d.ricevuta}">Scarica la ricevuta ${d.ricevuta}</button>`).join("")}
+      </div>
+    </article>`;
+  }
+
+  const vuoto = (titolo, testo, azioni) => `<div class="empty"><h2 style="font-size:1.4rem">${titolo}</h2><p class="muted">${testo}</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${azioni}</div></div>`;
+  const STATI = ["Inviata", "In valutazione", "Approvata", "Campagna online"];
+  const idxStato = { inviata: 0, valutazione: 1, approvata: 2, online: 3, respinta: 1 };
+
+  const render = {
+    sostenute: () => {
+      if (!sostenuti.length) return vuoto("Non hai ancora sostenuto nessuna campagna", "Quando contribuisci, qui trovi il progetto, la ricevuta e gli aggiornamenti.",
+        `<a class="btn" href="campagne.html?stato=in-corso">Scegli una campagna</a>${u ? "" : `<a class="btn btn-ghost" href="accedi.html?next=i-miei-progetti.html">Hai già donato? Accedi</a>`}`);
+      const tot = don.reduce((s, d) => s + d.importo, 0);
+      return `<p class="muted">${don.length} ${don.length === 1 ? "contributo" : "contributi"} per un totale di <strong style="color:var(--ink)">${euro(tot)}</strong>.</p>${sostenuti.map(card).join("")}`;
+    },
+    seguite: () => seguiti.length ? seguiti.map(card).join("")
+      : vuoto("Non segui altre campagne", "Premi “Segui il progetto” nella scheda di una campagna per ricevere gli aggiornamenti senza donare.", `<a class="btn" href="campagne.html">Esplora le campagne</a>`),
+    proposte: () => {
+      if (!u) return vuoto("Accedi per vedere le tue proposte", "Le candidature sono legate al tuo account istituzionale UniTO.",
+        `<a class="btn" href="accedi.html?next=i-miei-progetti.html">Accedi</a><a class="btn btn-ghost" href="proponi.html">Come proporre una campagna</a>`) + (bozza ? `<p class="small muted" style="text-align:center;margin-top:12px">Hai una bozza di candidatura in questo browser: <a href="candidatura.html">riprendila</a>.</p>` : "");
+      const bz = bozza ? `<article class="prop"><div class="prop-head"><div><span class="badge badge-run">Bozza</span><h3 style="margin:8px 0 4px">${esc(bozza.titolo || "Candidatura senza titolo")}</h3>
+          <p class="small muted" style="margin:0">Ultima modifica: ${new Date(bozza.when).toLocaleString("it-IT", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })} · passo ${bozza.step || 1} di 4</p></div>
+          <a class="btn btn-sm" href="candidatura.html">Riprendi la bozza</a></div></article>` : "";
+      const list = cand.slice().sort((a, b) => b.data.localeCompare(a.data)).map(p => {
+        const i = idxStato[p.stato];
+        const steps = STATI.map((l, k) => {
+          const cls = p.stato === "respinta" && k === 1 ? "fail" : k < i || (k === i && p.stato === "online") ? "done" : k === i ? "current" : "";
+          return `<li class="${cls}">${p.stato === "respinta" && k === 1 ? "Non approvata" : l}</li>`;
+        }).join("");
+        const badge = { inviata: "badge-run", valutazione: "badge-run", approvata: "badge-ok", online: "badge-ok", respinta: "badge-fail" }[p.stato];
+        const label = { inviata: "Inviata", valutazione: "In valutazione", approvata: "Approvata", online: "Online", respinta: "Non approvata" }[p.stato];
+        return `<article class="prop"><div class="prop-head"><div><span class="badge ${badge}">${label}</span>
+            <h3 style="margin:8px 0 4px">${esc(p.titolo)}</h3>
+            <p class="small muted" style="margin:0">Protocollo ${p.protocollo} · inviata il ${data(p.data)} · obiettivo ${euro(p.obiettivo)} · ${TEMI[p.tema].nome}</p></div>
+            ${p.stato === "respinta" ? `<a class="btn btn-ghost btn-sm" href="candidatura.html">Ripresenta</a>` : ""}</div>
+          <ol class="stepper" aria-label="Stato della proposta">${steps}</ol>
+          ${p.nota ? `<p class="small" style="margin:0"><strong>Nota dello sportello:</strong> ${esc(p.nota)}</p>` : ""}</article>`;
+      }).join("");
+      if (!bz && !list) return vuoto("Non hai ancora proposto campagne", "Scopri requisiti e tempi, poi compila la candidatura: puoi salvarla e riprenderla quando vuoi.", `<a class="btn" href="candidatura.html">Inizia una candidatura</a><a class="btn btn-ghost" href="proponi.html">Come funziona</a>`);
+      return `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><p class="muted" style="margin:0">Lo stato si aggiorna a ogni passaggio della valutazione. Ricevi anche un'email.</p><a class="btn btn-sm" href="candidatura.html">Nuova candidatura</a></div>${bz}${list}`;
+    },
+    account: () => u
+      ? `<div class="grid g2" style="align-items:start"><div class="panel">
+          <h2 style="font-size:1.3rem">Il tuo account</h2>
+          <div class="summary-row"><span class="k">Nome</span><span class="v">${esc(u.nome)} ${esc(u.cognome)}</span></div>
+          <div class="summary-row"><span class="k">Email</span><span class="v">${esc(u.email)}</span></div>
+          <div class="summary-row"><span class="k">Tipo</span><span class="v">${u.ruolo === "unito" ? "Personale o studente UniTO" : "Sostenitore"}</span></div>
+          <div class="summary-row"><span class="k">Iscritto dal</span><span class="v">${data(u.dal)}</span></div>
+          <button class="btn btn-ghost" style="margin-top:18px" type="button" id="esci2">Esci dall'account</button></div>
+          <div class="panel"><h2 style="font-size:1.3rem">Email che ricevi</h2>
+          <label class="check"><input type="checkbox" checked disabled><span>Conferme e ricevute dei contributi<span class="hint">Necessarie, non si possono disattivare.</span></span></label>
+          <label class="check"><input type="checkbox" id="pref-agg" ${store.get(key("pref_agg"), true) ? "checked" : ""}><span>Aggiornamenti dei progetti che segui<span class="hint">Al massimo uno al mese per progetto.</span></span></label>
+          <p class="small muted" id="pref-msg" aria-live="polite"></p></div></div>`
+      : `<div class="panel" style="max-width:640px"><h2 style="font-size:1.3rem">Accedi al tuo account</h2>
+          <p>Con un account ritrovi i progetti su qualsiasi dispositivo; i contributi fatti da questo browser verranno collegati automaticamente.</p>
+          <div style="display:flex;gap:10px"><a class="btn" href="accedi.html?next=i-miei-progetti.html">Accedi</a><a class="btn btn-ghost" href="accedi.html?next=i-miei-progetti.html#registrati">Crea un account</a></div></div>`
+  };
+
+  function show(k, focus) {
+    document.querySelectorAll("#tabs button").forEach(b => { const on = b.dataset.k === k; b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; if (on) $("pannello").setAttribute("aria-labelledby", b.id); });
+    $("pannello").innerHTML = render[k]();
+    try { history.replaceState(null, "", "#" + k); } catch (e) {}
+    bind(); UCF.animateBars($("pannello"));
+    if (focus) document.getElementById("t-" + k).focus();
+  }
+  const btns = [...document.querySelectorAll("#tabs button")];
+  btns.forEach((b, i) => {
+    b.onclick = () => show(b.dataset.k);
+    b.onkeydown = (e) => { const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0; if (d) { e.preventDefault(); show(btns[(i + d + btns.length) % btns.length].dataset.k, true); } };
+  });
+
+  function bind() {
+    const P = $("pannello");
+    P.querySelectorAll("[data-unfollow]").forEach(b => b.onclick = () => {
+      const id = b.dataset.unfollow;
+      if (!confirm(`Vuoi smettere di seguire “${campagna(id).titolo}”? I tuoi contributi resteranno registrati.`)) return;
+      UCF.toggleSegui(id); location.reload();
+    });
+    P.querySelectorAll("[data-follow]").forEach(b => b.onclick = () => { UCF.toggleSegui(b.dataset.follow); location.reload(); });
+    P.querySelectorAll("[data-ric]").forEach(b => b.onclick = () => UCF.toast(`Nel sito reale si scaricherebbe il PDF della ricevuta ${b.dataset.ric}`));
+    const e2 = $("esci2"); if (e2) e2.onclick = () => { UCF.logout(); location.href = "index.html"; };
+    const pa = $("pref-agg"); if (pa) pa.onchange = () => { store.set(key("pref_agg"), pa.checked); $("pref-msg").textContent = "✓ Preferenza salvata"; };
+  }
+
+  const start = (location.hash || "").slice(1);
+  const predef = u && u.ruolo === "unito" && (cand.length || bozza) ? "proposte" : !sostenuti.length && seguiti.length ? "seguite" : "sostenute";
+  show(TABS.some(t => t[0] === start) ? start : predef);
+  // Le voci del menu del profilo cambiano solo l'ancora: si passa alla scheda senza ricaricare
+  window.addEventListener("hashchange", () => {
+    const k = location.hash.slice(1);
+    if (TABS.some(t => t[0] === k)) { show(k); $("pannello").focus({ preventScroll: true }); window.scrollTo({ top: document.getElementById("tabs").offsetTop - 120 }); }
+  });
+
+  // La visita di oggi diventa il riferimento per le prossime novità
+  window.addEventListener("pagehide", () => { if (sostenuti.length || seguiti.length) store.set(key("ultima_visita"), new Date().toISOString().slice(0, 10)); });
+});
+</script>
+</body>
+</html>

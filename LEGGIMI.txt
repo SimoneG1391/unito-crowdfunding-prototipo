@@ -1,0 +1,33 @@
+UniTO Crowdfunding – Prototipo (Assignment 2, Gruppo F)
+========================================================
+
+PAGINA INIZIALE: index.html
+Avvio: aprire index.html con un browser recente (Chrome, Firefox, Edge, Safari).
+Non serve un server né una connessione (senza connessione cambiano solo i caratteri tipografici).
+Versione progettata per desktop.
+
+Percorso principale (in profondità): sostenere una campagna
+  Home → Campagne → scheda "Aria pulita in classe" → Sostieni → importo → dati → riepilogo → conferma → I miei progetti
+
+Accesso simulato (nessun server: account e dati restano nel browser)
+  - Accedi o registrati: link in alto a destra, oppure da I miei progetti
+  - Giuseppe, sostenitore:      giuseppe.demo@esempio.it  /  Prova2026!
+  - Marco, ricercatore UniTO:   marco.giordano@unito.it   /  Prova2026!
+  - I contributi fatti senza account vengono collegati all'account al primo accesso.
+
+Altri percorsi provabili
+  - Seguire i progetti sostenuti: accedi come Giuseppe → I miei progetti
+  - Vedere lo stato delle proposte: accedi come Marco → I miei progetti › Le mie proposte
+  - Proporre una campagna: Proponi un progetto → Inizia la candidatura
+    (la bozza si salva da sola; per inviarla serve l'accesso come utente UniTO)
+  - Contattare l'Ufficio: Chi siamo → modulo Scrivici
+
+Dati di prova per il pagamento simulato
+  Carta: 4242 4242 4242 4242 · scadenza 12/29 · CVC 123
+  Codice fiscale di esempio: RSSMRA80A01L219X
+
+Note
+  - Campagne, persone e numeri sono di fantasia. Nessun pagamento è reale.
+  - I dati inseriti restano solo nel browser (localStorage/sessionStorage).
+    Per ripartire da zero: cancellare i dati del sito dalle impostazioni del browser
+    (oppure, dalla console: localStorage.clear()).

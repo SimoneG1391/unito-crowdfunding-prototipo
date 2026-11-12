@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Campagne – UniTO Crowdfunding</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="campagne">
+<main id="main" class="wrap">
+  <nav class="crumbs" aria-label="Percorso"><ol><li><a href="index.html">Home</a></li><li aria-current="page">Campagne</li></ol></nav>
+  <header class="page-head">
+    <p class="eyebrow">Esplora</p>
+    <h1>Campagne</h1>
+    <p class="lead">Cerca per parola chiave o filtra per tema e stato. Ogni campagna è proposta da personale o studenti dell'Università di Torino e verificata dall'Ufficio Fundraising.</p>
+  </header>
+
+  <form id="filtri" onsubmit="return false">
+    <div class="toolbar">
+      <div>
+        <label for="q">Cerca una campagna</label>
+        <div class="field-search">
+          <input id="q" type="search" placeholder="Titolo, tema o dipartimento" autocomplete="off">
+          <button type="button" id="clear" aria-label="Cancella la ricerca" hidden>✕ Cancella</button>
+        </div>
+      </div>
+      <div>
+        <label for="ordina">Ordina per</label>
+        <select id="ordina">
+          <option value="scadenza">In scadenza</option>
+          <option value="vicine">Più vicine all'obiettivo</option>
+          <option value="recenti">Più recenti</option>
+          <option value="sostenitori">Più sostenitori</option>
+        </select>
+      </div>
+    </div>
+    <div class="filters">
+      <fieldset class="chips" id="f-tema"><legend>Tema</legend></fieldset>
+      <fieldset class="chips" id="f-stato"><legend>Stato</legend></fieldset>
+    </div>
+  </form>
+
+  <div class="result-info">
+    <p id="conteggio" aria-live="polite" style="margin:0"></p>
+    <button class="linkbtn" id="reset" type="button" hidden>Azzera i filtri</button>
+  </div>
+  <div class="cards" id="lista"></div>
+  <div class="empty" id="vuoto" hidden>
+    <h2 style="font-size:1.4rem">Nessuna campagna trovata</h2>
+    <p class="muted">Prova con un'altra parola o togli qualche filtro.</p>
+    <button class="btn btn-ghost" type="button" id="reset2">Mostra tutte le campagne</button>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const $ = (id) => document.getElementById(id);
+  const temi = [["tutti", "Tutti"], ...Object.entries(TEMI).map(([k, v]) => [k, v.nome])];
+  const stati = [["tutte", "Tutte"], ["in-corso", "In corso"], ["concluse", "Concluse"]];
+  const chips = (name, arr) => arr.map(([v, l]) => `<label class="chip"><input type="radio" name="${name}" value="${v}"><span>${l}</span></label>`).join("");
+  $("f-tema").insertAdjacentHTML("beforeend", chips("tema", temi));
+  $("f-stato").insertAdjacentHTML("beforeend", chips("stato", stati));
+
+  // Lo stato dei filtri sta nell'indirizzo: il termine cercato resta visibile (A1 H6) e "indietro" funziona
+  const p = new URLSearchParams(location.search);
+  $("q").value = p.get("q") || "";
+  document.querySelector(`input[name=tema][value="${p.get("tema") || "tutti"}"]`).checked = true;
+  document.querySelector(`input[name=stato][value="${p.get("stato") || "tutte"}"]`).checked = true;
+  $("ordina").value = p.get("ordina") || "scadenza";
+
+  const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+
+  function render() {
+    const q = $("q").value.trim();
+    const tema = document.querySelector("input[name=tema]:checked").value;
+    const stato = document.querySelector("input[name=stato]:checked").value;
+    const ord = $("ordina").value;
+    let r = CAMPAGNE.filter((c) =>
+      (tema === "tutti" || c.tema === tema) &&
+      (stato === "tutte" || (stato === "in-corso" ? c.stato === "in-corso" : c.stato !== "in-corso")) &&
+      (!q || norm([c.titolo, c.sottotitolo, c.dipartimento, TEMI[c.tema].nome].join(" ")).includes(norm(q))));
+    const att = (c) => (c.stato === "in-corso" ? 0 : 1);
+    const sorters = {
+      scadenza: (a, b) => att(a) - att(b) || a.giorni - b.giorni,
+      vicine: (a, b) => att(a) - att(b) || b.raccolti / b.obiettivo - a.raccolti / a.obiettivo,
+      recenti: (a, b) => b.inizio.localeCompare(a.inizio),
+      sostenitori: (a, b) => b.sostenitori - a.sostenitori
+    };
+    r.sort(sorters[ord]);
+    $("lista").innerHTML = r.map(UCF.card).join("");
+    $("vuoto").hidden = r.length > 0;
+    const filtri = q || tema !== "tutti" || stato !== "tutte";
+    $("conteggio").innerHTML = `<strong>${r.length}</strong> ${r.length === 1 ? "campagna" : "campagne"}${q ? ` per “${UCF.esc(q)}”` : ""}`;
+    $("reset").hidden = !filtri;
+    $("clear").hidden = !q;
+    const np = new URLSearchParams();
+    if (q) np.set("q", q); if (tema !== "tutti") np.set("tema", tema); if (stato !== "tutte") np.set("stato", stato); if (ord !== "scadenza") np.set("ordina", ord);
+    try { history.replaceState(null, "", location.pathname + (np.toString() ? "?" + np : "")); } catch (e) {}
+    UCF.animateBars($("lista"));
+  }
+
+  function reset() {
+    $("q").value = "";
+    document.querySelector("input[name=tema][value=tutti]").checked = true;
+    document.querySelector("input[name=stato][value=tutte]").checked = true;
+    render(); $("q").focus();
+  }
+  $("filtri").addEventListener("input", render);
+  $("filtri").addEventListener("change", render);
+  $("clear").addEventListener("click", () => { $("q").value = ""; render(); $("q").focus(); });
+  $("reset").addEventListener("click", reset);
+  $("reset2").addEventListener("click", reset);
+  render();
+});
+</script>
+</body>
+</html>

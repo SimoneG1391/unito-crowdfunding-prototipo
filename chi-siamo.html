@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Chi siamo – UniTO Crowdfunding</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="chi-siamo">
+<main id="main" class="wrap">
+  <nav class="crumbs" aria-label="Percorso"><ol><li><a href="index.html">Home</a></li><li aria-current="page">Chi siamo</li></ol></nav>
+  <header class="page-head">
+    <p class="eyebrow">L'iniziativa</p>
+    <h1>Chi siamo</h1>
+    <p class="lead">UniTO Crowdfunding è il programma ufficiale con cui l'Università degli Studi di Torino raccoglie contributi per progetti di ricerca, didattica e impegno sociale. È gestito dall'Ufficio Fundraising dell'Ateneo.</p>
+  </header>
+
+  <section class="block">
+    <div class="grid g3">
+      <div class="panel"><h3>Chi incassa i fondi</h3><p class="muted" style="margin:0">L'Università di Torino, direttamente. Non ci sono intermediari privati: i contributi arrivano su un conto dell'Ateneo e sono destinati al progetto scelto.</p></div>
+      <div class="panel"><h3>Chi verifica le campagne</h3><p class="muted" style="margin:0">Una commissione di docenti e personale dell'Ufficio Fundraising valuta ogni proposta: fattibilità, budget e chiarezza.</p></div>
+      <div class="panel"><h3>Chi controlla le spese</h3><p class="muted" style="margin:0">I fondi seguono le procedure contabili dell'Ateneo. Ogni campagna pubblica una <a href="risultati.html">rendicontazione</a> finale.</p></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Il team</h2>
+    <div class="grid g4">
+      <div class="person"><div class="avatar" aria-hidden="true">SR</div><div><strong>Silvia Rosso</strong><br><span class="small muted">Responsabile Ufficio Fundraising</span></div></div>
+      <div class="person"><div class="avatar" aria-hidden="true" style="background:var(--t-ambiente)">MB</div><div><strong>Matteo Bianco</strong><br><span class="small muted">Supporto ai progetti</span></div></div>
+      <div class="person"><div class="avatar" aria-hidden="true" style="background:var(--t-societa)">AL</div><div><strong>Anna Lanza</strong><br><span class="small muted">Comunicazione</span></div></div>
+      <div class="person"><div class="avatar" aria-hidden="true" style="background:var(--t-salute)">GP</div><div><strong>Giorgio Pautasso</strong><br><span class="small muted">Amministrazione e rendicontazione</span></div></div>
+    </div>
+  </section>
+
+  <section class="block" id="contatti">
+    <div class="layout-side">
+      <div>
+        <h2>Scrivici</h2>
+        <p class="muted">Rispondiamo entro 3 giorni lavorativi.</p>
+        <div id="esito" aria-live="polite"></div>
+        <form id="contatto" novalidate>
+          <div class="row2">
+            <div class="field"><label for="cn">Nome <span class="req">*</span></label><input id="cn" autocomplete="name"><span class="error-msg"></span></div>
+            <div class="field"><label for="ce">Email <span class="req">*</span><span class="hint">Ti rispondiamo qui</span></label><input id="ce" type="email" autocomplete="email"><span class="error-msg"></span></div>
+          </div>
+          <div class="field"><label for="ca">Argomento</label>
+            <select id="ca"><option>Ho una domanda su un contributo</option><option>Vorrei proporre un progetto</option><option>Ricevute e dati fiscali</option><option>Altro</option></select></div>
+          <div class="field"><label for="cm">Messaggio <span class="req">*</span></label><textarea id="cm"></textarea><span class="error-msg"></span></div>
+          <button class="btn" type="submit">Invia il messaggio</button>
+        </form>
+      </div>
+      <aside class="panel">
+        <h3 style="font-size:1.1rem">Ufficio Fundraising</h3>
+        <p>Università degli Studi di Torino<br>Via Verdi 8, 10124 Torino</p>
+        <p><a href="mailto:crowdfunding@unito.it">crowdfunding@unito.it</a><br>011 000 0000<br><span class="small muted">lunedì–venerdì, 9–13</span></p>
+        <p class="small" style="margin:0">Sito istituzionale dell'Ateneo: <a class="ext" href="https://www.unito.it" rel="noopener">unito.it<span class="sr-only"> (sito esterno)</span></a> <span class="muted">(sito esterno)</span></p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block" id="privacy">
+    <h2>Privacy</h2>
+    <p class="muted">I dati raccolti sono trattati dall'Università di Torino, titolare del trattamento, solo per gestire contributi, ricevute, rimborsi e, se richiesto, gli aggiornamenti dei progetti. Non vengono ceduti a terzi. Per esercitare i tuoi diritti scrivi a <a href="mailto:privacy@unito.it">privacy@unito.it</a>.</p>
+  </section>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const f = document.getElementById("contatto");
+  const rules = {
+    cn: v => v.trim() ? "" : "Scrivi il tuo nome, così sappiamo come chiamarti.",
+    ce: v => !v ? "Inserisci l'email: è l'indirizzo a cui ti risponderemo." : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "" : "L'email non sembra completa, es. nome@esempio.it.",
+    cm: v => v.trim().length >= 10 ? "" : "Scrivi almeno qualche parola (10 caratteri) per spiegarci di cosa hai bisogno."
+  };
+  const check = (el) => { const m = rules[el.id](el.value); const fl = el.closest(".field"); fl.classList.toggle("has-error", !!m); el.setAttribute("aria-invalid", !!m); fl.querySelector(".error-msg").textContent = m; return !m; };
+  f.addEventListener("focusout", e => rules[e.target.id] && e.target.value && check(e.target));
+  f.addEventListener("input", e => rules[e.target.id] && e.target.closest(".has-error") && check(e.target));
+  f.addEventListener("submit", e => {
+    e.preventDefault();
+    const bad = Object.keys(rules).map(id => document.getElementById(id)).filter(el => !check(el));
+    if (bad.length) { bad[0].focus(); return; }
+    const b = f.querySelector("button"); b.disabled = true; b.innerHTML = '<span class="spinner" aria-hidden="true"></span> Invio…';
+    setTimeout(() => {
+      document.getElementById("esito").innerHTML = `<div class="alert alert-ok"><span><strong>Messaggio inviato.</strong> Ti risponderemo all'indirizzo ${UCF.esc(document.getElementById("ce").value)} entro 3 giorni lavorativi.</span></div>`;
+      f.reset(); b.disabled = false; b.textContent = "Invia il messaggio";
+    }, 1000);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Campagna – UniTO Crowdfunding</title>
+<!-- Anteprima per i link condivisi in chat (opportunità O1 di Giulia) -->
+<meta property="og:site_name" content="UniTO Crowdfunding – Università di Torino">
+<meta property="og:title" content="Campagna di ricerca dell'Università di Torino">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="campagne">
+<main id="main" class="wrap">
+  <div id="contenuto"></div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { euro, data, esc, campagna, progress, qs } = UCF;
+  const c = campagna(qs("id"));
+  const root = document.getElementById("contenuto");
+
+  if (!c) {
+    root.innerHTML = `<div class="empty" style="margin-top:40px"><h1 style="font-size:1.8rem">Campagna non trovata</h1>
+      <p class="muted">Il link potrebbe essere incompleto o la campagna non esiste più.</p>
+      <a class="btn" href="campagne.html">Vai a tutte le campagne</a></div>`;
+    return;
+  }
+
+  document.title = `${c.titolo} – UniTO Crowdfunding`;
+  const t = TEMI[c.tema];
+  document.body.style.setProperty("--tc", t.colore);
+  const aperta = c.stato === "in-corso";
+  const tot = c.fondi.reduce((s, f) => s + f[1], 0);
+  const breve = `crowdfunding.unito.it/${c.id}`;
+
+  const fondi = c.fondi.map(([v, a]) => `<div class="funds-row"><span>${esc(v)}</span><span class="amount">${euro(a)}</span>
+      <div class="fbar" aria-hidden="true"><span style="width:${(a / tot * 100).toFixed(1)}%"></span></div></div>`).join("");
+
+  const agg = c.aggiornamenti.length
+    ? c.aggiornamenti.map((u, i) => `<article class="update" id="aggiornamento-${c.aggiornamenti.length - i}">
+        <time datetime="${u.data}">${data(u.data)}</time><h3>${esc(u.titolo)}</h3><p>${esc(u.testo)}</p></article>`).join("")
+    : `<p class="muted">Non ci sono ancora aggiornamenti. Segui il progetto per sapere quando ne verranno pubblicati.</p>`;
+
+  const impatto = c.impatto.length ? `<section class="block" aria-labelledby="h-impatto">
+      <h2 id="h-impatto">Cosa rende possibile il tuo contributo</h2>
+      <div class="impact">${c.impatto.map(([a, w]) => `<div><strong>${euro(a)}</strong>${esc(w)}</div>`).join("")}</div></section>` : "";
+
+  const cta = aperta
+    ? `<a class="btn btn-block" href="sostieni.html?id=${c.id}">Sostieni questo progetto</a>
+       <p class="small muted" style="text-align:center;margin:10px 0 0">Da 5 € · Nessuna registrazione · Rimborso garantito se l'obiettivo non viene raggiunto</p>`
+    : `<div class="alert alert-info" style="margin:0"><span>La raccolta è conclusa. ${c.stato === "non-raggiunta" ? "I contributi sono stati restituiti." : "Puoi seguire i risultati del progetto."}</span></div>`;
+
+  root.innerHTML = `
+  <nav class="crumbs" aria-label="Percorso"><ol><li><a href="index.html">Home</a></li><li><a href="campagne.html">Campagne</a></li><li><a href="campagne.html?tema=${c.tema}">${t.nome}</a></li><li aria-current="page">${esc(c.titolo)}</li></ol></nav>
+
+  <div class="identity">${UCF.ico.shield}<span><strong>Campagna ufficiale dell'Università di Torino</strong> · ${esc(c.dipartimento)}. I fondi sono incassati e gestiti dall'Ateneo. <a href="come-funziona.html">Come funziona</a></span></div>
+
+  <div class="project-hero">
+    <div>
+      <span class="tag" style="--tc:${t.colore};border:1px solid var(--line)">${t.nome}</span>
+      <h1 style="margin-top:12px">${esc(c.titolo)}</h1>
+      <p class="lead" style="font-size:1.2rem;color:var(--ink-2)">${esc(c.sottotitolo)}</p>
+      <div class="project-art"><button class="play" type="button" id="video"><span class="ico" aria-hidden="true">▶</span>Guarda il video (1:30, con sottotitoli)</button></div>
+      <p class="summary-30"><strong>In breve:</strong> ${esc(c.sintesi)}</p>
+    </div>
+    <aside class="sticky" aria-label="Stato della raccolta">
+      <div class="panel">
+        ${progress(c, true)}
+        <div style="margin:22px 0 14px">${cta}</div>
+        <button class="btn btn-ghost btn-block" type="button" id="segui" aria-pressed="false"></button>
+        <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+        <p class="label" style="font-size:.9rem">Condividi o ritrova la campagna</p>
+        <div class="shortlink"><code>${breve}</code><button type="button" id="copia">Copia link</button></div>
+        <div class="share-row" style="margin-top:10px">
+          <a class="btn btn-ghost btn-sm" href="#" data-share="WhatsApp">WhatsApp</a>
+          <a class="btn btn-ghost btn-sm" href="#" data-share="Telegram">Telegram</a>
+          <a class="btn btn-ghost btn-sm" href="#" data-share="LinkedIn">LinkedIn</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <nav class="tabs-nav" aria-label="Sezioni della campagna"><ul>
+    <li><a href="#progetto">Il progetto</a></li>
+    <li><a href="#fondi">Come useremo i fondi</a></li>
+    <li><a href="#team">Chi lo propone</a></li>
+    <li><a href="#aggiornamenti">Aggiornamenti (${c.aggiornamenti.length})</a></li>
+    <li><a href="#domande">Domande</a></li>
+  </ul></nav>
+
+  <div class="layout-side">
+    <div>
+      <section class="block" id="progetto" aria-labelledby="h-prog">
+        <h2 id="h-prog">Il progetto</h2>
+        <p>${esc(c.descrizione[0])}</p>
+        ${c.descrizione.length > 1 ? `<div class="more" id="piu">${c.descrizione.slice(1).map(d => `<p>${esc(d)}</p>`).join("")}</div>
+        <button class="linkbtn" type="button" data-more aria-expanded="false" aria-controls="piu">Leggi di più</button>` : ""}
+      </section>
+
+      <section class="block" id="fondi" aria-labelledby="h-fondi">
+        <h2 id="h-fondi">Come useremo i fondi</h2>
+        <p class="muted">Ripartizione dell'obiettivo di ${euro(c.obiettivo)}. Le spese sono rendicontate a fine progetto nella pagina <a href="risultati.html">Risultati</a>.</p>
+        ${fondi}
+        <div class="funds-total"><span>Totale</span><span>${euro(tot)}</span></div>
+      </section>
+
+      ${impatto}
+
+      <section class="block" id="team" aria-labelledby="h-team">
+        <h2 id="h-team">Chi lo propone</h2>
+        <div class="panel person">
+          <div class="avatar" aria-hidden="true">${c.responsabile.iniziali}</div>
+          <div>
+            <strong style="font-size:1.1rem">${esc(c.responsabile.nome)}</strong><br>
+            <span class="muted">${esc(c.responsabile.ruolo)} · ${esc(c.dipartimento)}</span><br>
+            <a href="mailto:${c.responsabile.email}">${c.responsabile.email}</a>
+          </div>
+        </div>
+        <p class="small muted" style="margin-top:12px">Team: ${c.team.map(esc).join(", ")}</p>
+      </section>
+
+      <section class="block" id="aggiornamenti" aria-labelledby="h-agg">
+        <h2 id="h-agg">Aggiornamenti</h2>
+        ${agg}
+      </section>
+
+      <section class="block" id="domande" aria-labelledby="h-faq">
+        <h2 id="h-faq">Domande frequenti</h2>
+        <details class="faq"><summary>Cosa succede se l'obiettivo non viene raggiunto?</summary><div>La campagna segue la regola “tutto o niente”: se alla scadenza non si raggiunge l'obiettivo, ti restituiamo l'intero importo entro 10 giorni lavorativi, sullo stesso metodo di pagamento.</div></details>
+        <details class="faq"><summary>Quanta parte del mio contributo arriva al progetto?</summary><div>Tutto, tranne le commissioni del circuito di pagamento (circa il 3%), già indicate nella ripartizione dei fondi. L'Università non trattiene altre percentuali.</div></details>
+        <details class="faq"><summary>Devo creare un account?</summary><div>No. Bastano un indirizzo email per la conferma e il metodo di pagamento.</div></details>
+        <details class="faq"><summary>Ricevo una ricevuta per la dichiarazione dei redditi?</summary><div>Sì, se la richiedi indicando il codice fiscale. Le erogazioni liberali alle università possono dare diritto a benefici fiscali secondo la normativa vigente: <a href="come-funziona.html#ricevute">leggi i dettagli</a>.</div></details>
+        <details class="faq"><summary>Il mio nome sarà pubblico?</summary><div>Solo se lo scegli tu. Puoi contribuire in forma anonima.</div></details>
+        <p style="margin-top:16px">Hai un'altra domanda? <a href="mailto:${c.responsabile.email}">Scrivi a ${esc(c.responsabile.nome)}</a> o all'<a href="chi-siamo.html#contatti">Ufficio Fundraising</a>.</p>
+      </section>
+    </div>
+    <aside>
+      <div class="panel-soft">
+        <h3 style="font-size:1.1rem">Perché puoi fidarti</h3>
+        <ul class="small" style="padding-left:18px;margin:0">
+          <li>Campagna verificata dall'Ufficio Fundraising UniTO</li>
+          <li>Pagamenti protetti e gestiti dall'Ateneo</li>
+          <li>Rimborso se l'obiettivo non viene raggiunto</li>
+          <li>Rendicontazione pubblica delle spese</li>
+        </ul>
+      </div>
+    </aside>
+  </div>`;
+
+  // Segui il progetto (Giuseppe)
+  const sb = document.getElementById("segui");
+  const draw = () => { const on = UCF.segue(c.id); sb.setAttribute("aria-pressed", on); sb.textContent = on ? "✓ Segui già questo progetto" : "☆ Segui il progetto"; };
+  sb.addEventListener("click", () => { UCF.toggleSegui(c.id); draw(); });
+  draw();
+
+  document.getElementById("copia").addEventListener("click", (e) => UCF.copia("https://" + breve, e.currentTarget));
+  document.querySelectorAll("[data-share]").forEach(a => a.addEventListener("click", (e) => {
+    e.preventDefault(); UCF.toast(`Nel sito reale si aprirebbe la condivisione su ${a.dataset.share}`);
+  }));
+  document.getElementById("video").addEventListener("click", () => UCF.toast("Video non disponibile nel prototipo"));
+
+  // Evidenzia la sezione corrente nella barra delle sezioni
+  const links = [...document.querySelectorAll(".tabs-nav a")];
+  const obs = new IntersectionObserver((en) => en.forEach(x => {
+    if (x.isIntersecting) links.forEach(l => l.classList.toggle("active", l.getAttribute("href") === "#" + x.target.id));
+  }), { rootMargin: "-40% 0px -55% 0px" });
+  document.querySelectorAll(".block[id]").forEach(s => obs.observe(s));
+
+  if (location.hash) setTimeout(() => document.querySelector(location.hash)?.scrollIntoView(), 50);
+  UCF.animateBars(root);
+});
+</script>
+</body>
+</html>

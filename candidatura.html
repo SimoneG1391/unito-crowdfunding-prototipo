@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Candidatura – Proponi un progetto – UniTO Crowdfunding</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .saved { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--muted); }
+  .saved::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ok); }
+  .saved.saving::before { background: var(--accent); }
+  .fstep[hidden] { display: none; }
+  .budget-row { display: grid; grid-template-columns: 1fr 160px 40px; gap: 10px; margin-bottom: 10px; align-items: start; }
+  .rm { border: 0; background: var(--soft); border-radius: 8px; height: 48px; cursor: pointer; font-size: 1.1rem; }
+  .drop { border: 2px dashed #cfc8ba; border-radius: var(--r); padding: 22px; text-align: center; background: #fff; }
+</style>
+</head>
+<body data-page="proponi">
+<main id="main" class="wrap">
+  <nav class="crumbs" aria-label="Percorso"><ol><li><a href="index.html">Home</a></li><li><a href="proponi.html">Proponi un progetto</a></li><li aria-current="page">Candidatura</li></ol></nav>
+  <header class="page-head" style="display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:28px">
+    <div><h1>Candidatura</h1><p class="muted" style="margin:0">Compila con calma: la bozza viene salvata automaticamente in questo browser. I campi con <span class="req">*</span> sono obbligatori.</p></div>
+    <span class="saved" id="saved" aria-live="polite">Nessuna modifica</span>
+  </header>
+
+  <div id="login-info"></div>
+  <div id="resume" class="alert alert-info" hidden><span>Hai una bozza salvata il <strong id="resume-when"></strong>. L'abbiamo ripristinata. <button class="linkbtn" id="ricomincia">Ricomincia da zero</button></span></div>
+
+  <div class="layout-side">
+    <form id="f" novalidate>
+      <ol class="stepper" id="stepper" aria-label="Passaggi della candidatura">
+        <li>Chi sei</li><li>Il progetto</li><li>Budget e materiali</li><li>Invio</li>
+      </ol>
+      <div class="form-errors" id="ferr" role="alert" tabindex="-1"></div>
+
+      <!-- Passo 1 -->
+      <fieldset class="fstep" data-s="1" style="border:0;padding:0;margin:0">
+        <legend class="sr-only">Chi sei</legend>
+        <div class="row2">
+          <div class="field"><label for="nome">Nome e cognome <span class="req">*</span></label><input id="nome" name="nome" autocomplete="name"><span class="error-msg"></span></div>
+          <div class="field"><label for="email">Email istituzionale <span class="req">*</span><span class="hint">Deve terminare con @unito.it o @edu.unito.it</span></label><input id="email" name="email" type="email" autocomplete="email"><span class="error-msg"></span></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="ruolo">Ruolo <span class="req">*</span></label>
+            <select id="ruolo" name="ruolo"><option value="">Scegli…</option><option value="docente">Docente o ricercatore strutturato</option><option value="assegnista">Assegnista o post-doc</option><option value="dottorando">Dottorando/a</option><option value="studente">Studente/ssa o associazione</option></select><span class="error-msg"></span></div>
+          <div class="field"><label for="dip">Dipartimento <span class="req">*</span></label><input id="dip" name="dip" list="dipartimenti" placeholder="Inizia a scrivere…"><span class="error-msg"></span>
+            <datalist id="dipartimenti"><option>Chimica</option><option>Fisica</option><option>Informatica</option><option>Neuroscienze</option><option>Scienze della Terra</option><option>Scienze della Vita e Biologia dei Sistemi</option><option>Scienze agrarie, forestali e alimentari</option><option>Culture, Politica e Società</option></datalist></div>
+        </div>
+        <div class="field" id="ref-box" hidden><label for="referente">Docente di riferimento <span class="req">*</span><span class="hint">Per assegnisti, dottorandi e studenti. Gli chiederemo noi la firma: non devi raccoglierla tu.</span></label><input id="referente" name="referente"><span class="error-msg"></span></div>
+      </fieldset>
+
+      <!-- Passo 2 -->
+      <fieldset class="fstep" data-s="2" hidden style="border:0;padding:0;margin:0">
+        <legend class="sr-only">Il progetto</legend>
+        <div class="field"><label for="titolo">Titolo della campagna <span class="req">*</span>
+          <button type="button" class="tip" aria-label="Suggerimento sul titolo">?<span class="tip-text" role="tooltip">Massimo 60 caratteri. Usa parole semplici e un verbo d'azione, es. “Misuriamo l'aria nelle scuole” invece di “Monitoraggio IAQ in ambienti scolastici”.</span></button>
+          <span class="counter" data-for="titolo" data-max="60"></span></label>
+          <input id="titolo" name="titolo" maxlength="80"><span class="error-msg"></span></div>
+        <div class="row2">
+          <div class="field"><label for="tema">Tema <span class="req">*</span></label><select id="tema" name="tema"><option value="">Scegli…</option><option value="ambiente">Ambiente</option><option value="salute">Salute</option><option value="tecnologia">Tecnologia</option><option value="societa">Società</option></select><span class="error-msg"></span></div>
+          <div class="field"><label for="obiettivo">Obiettivo economico (€) <span class="req">*</span><span class="hint">Tra 2.000 e 25.000 €</span></label><input id="obiettivo" name="obiettivo" inputmode="numeric"><span class="error-msg"></span></div>
+        </div>
+        <div class="field"><label for="sintesi">Il progetto in breve <span class="req">*</span>
+          <button type="button" class="tip" aria-label="Suggerimento sulla sintesi">?<span class="tip-text" role="tooltip">Spiega in 2–3 frasi cosa farete, per chi e cosa cambierà. Immagina di raccontarlo a un amico che non fa ricerca.</span></button>
+          <span class="counter" data-for="sintesi" data-max="400"></span></label>
+          <textarea id="sintesi" name="sintesi"></textarea><span class="error-msg"></span></div>
+      </fieldset>
+
+      <!-- Passo 3 -->
+      <fieldset class="fstep" data-s="3" hidden style="border:0;padding:0;margin:0">
+        <legend class="label" style="font-size:1.15rem">Voci di spesa <span class="req">*</span><span class="hint">Almeno una voce. Il totale deve corrispondere all'obiettivo.</span></legend>
+        <div id="budget"></div>
+        <button type="button" class="btn btn-ghost btn-sm" id="add">+ Aggiungi una voce</button>
+        <p id="budget-tot" class="small" style="margin-top:10px"></p>
+        <span class="error-msg" id="budget-err"></span>
+        <div class="field" style="margin-top:20px"><label for="video">Link al video (facoltativo)<span class="hint">YouTube, Vimeo o Drive. Se non hai ancora un video, lo prepariamo insieme con lo storyboard del Creator Kit.</span></label><input id="video" name="video" type="url" placeholder="https://"><span class="error-msg"></span></div>
+        <div class="field"><span class="label">Allegati (facoltativi)</span>
+          <div class="drop"><label for="file" style="font-weight:400;cursor:pointer"><strong style="color:var(--link);text-decoration:underline">Scegli i file</strong> oppure trascinali qui<span class="hint">PDF o immagini, massimo 10 MB ciascuno</span></label><input type="file" id="file" multiple accept=".pdf,image/*" class="sr-only"></div>
+          <ul id="files" class="small" style="padding-left:18px"></ul></div>
+      </fieldset>
+
+      <!-- Passo 4 -->
+      <fieldset class="fstep" data-s="4" hidden style="border:0;padding:0;margin:0">
+        <legend class="label" style="font-size:1.15rem">Controlla e invia</legend>
+        <div class="panel" id="riepilogo"></div>
+        <label class="check" style="margin-top:18px"><input type="checkbox" id="dich" name="dich"><span>Dichiaro che le informazioni sono corrette e che il progetto rispetta il <a href="proponi.html#requisiti">regolamento</a>. <span class="req">*</span></span></label>
+        <span class="error-msg" id="dich-err"></span>
+      </fieldset>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:12px">
+        <button type="button" class="btn btn-ghost" id="prev">← Indietro</button>
+        <button type="submit" class="btn" id="next">Continua</button>
+      </div>
+    </form>
+
+    <aside class="sticky">
+      <div class="panel">
+        <h3 style="font-size:1.1rem">Hai bisogno di aiuto?</h3>
+        <p class="small">Lo sportello crowdfunding risponde entro 3 giorni lavorativi.</p>
+        <p class="small"><a href="mailto:crowdfunding@unito.it">crowdfunding@unito.it</a><br>Martedì e giovedì 10–12: colloqui online</p>
+        <hr style="border:0;border-top:1px solid var(--line)">
+        <p class="small" style="margin:0"><a href="proponi.html#kit">Creator Kit</a> · <a href="proponi.html#tempi">Tempi</a> · <a href="proponi.html#requisiti">Requisiti</a></p>
+      </div>
+    </aside>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const { store, euro, esc } = UCF;
+  const KEY = "ucf_candidatura";
+  const $ = (id) => document.getElementById(id);
+  const f = $("f");
+  let step = 1;
+
+  const isUnito = (v) => /^[^\s@]+@(edu\.)?unito\.it$/i.test(v.trim());
+  const needRef = () => ["assegnista", "dottorando", "studente"].includes($("ruolo").value);
+  const rules = {
+    1: { nome: v => v.trim().length > 3 ? "" : "Inserisci nome e cognome.",
+         email: v => !v ? "Inserisci la tua email istituzionale." : isUnito(v) ? "" : "Usa l'email istituzionale (@unito.it o @edu.unito.it): ci serve per verificare che tu faccia parte dell'Ateneo.",
+         ruolo: v => v ? "" : "Scegli il tuo ruolo: cambia chi deve firmare la richiesta.",
+         dip: v => v.trim() ? "" : "Indica il dipartimento: i fondi verranno gestiti lì.",
+         referente: v => !needRef() || v.trim().length > 3 ? "" : "Indica il docente di riferimento: è obbligatorio per il tuo ruolo." },
+    2: { titolo: v => !v.trim() ? "Scrivi un titolo." : v.length > 60 ? `Il titolo è troppo lungo: ${v.length} caratteri su 60. Prova a togliere le parole tecniche.` : "",
+         tema: v => v ? "" : "Scegli il tema più vicino al progetto.",
+         obiettivo: v => { const n = +String(v).replace(/[.\s€]/g, ""); return !v ? "Indica quanto vuoi raccogliere." : isNaN(n) ? "Usa solo numeri, es. 6000." : n < 2000 || n > 25000 ? "L'obiettivo deve essere tra 2.000 e 25.000 €." : ""; },
+         sintesi: v => v.trim().length < 80 ? `Scrivi almeno 80 caratteri (ora ${v.trim().length}): chi legge deve capire cosa farete.` : v.length > 400 ? "La sintesi supera i 400 caratteri." : "" },
+    3: { video: v => !v || /^https?:\/\/\S+\.\S+/.test(v) ? "" : "Il link deve iniziare con https:// (es. https://youtu.be/…)." }
+  };
+
+  function setErr(el, msg) {
+    const fl = el.closest(".field"); if (!fl) return !msg;
+    fl.classList.toggle("has-error", !!msg); el.setAttribute("aria-invalid", !!msg);
+    fl.querySelector(".error-msg").textContent = msg || ""; return !msg;
+  }
+
+  /* ---------- Budget ---------- */
+  function budgetRow(v = "", a = "") {
+    const d = document.createElement("div"); d.className = "budget-row";
+    d.innerHTML = `<div><label class="sr-only">Voce di spesa</label><input placeholder="Es. 10 sensori di torbidità" value="${esc(v)}" data-b="v"></div>
+      <div><label class="sr-only">Importo in euro</label><input placeholder="€" inputmode="numeric" value="${esc(a)}" data-b="a"></div>
+      <button type="button" class="rm" aria-label="Elimina questa voce">✕</button>`;
+    $("budget").appendChild(d); return d;
+  }
+  const budget = () => [...$("budget").children].map(r => [r.querySelector("[data-b=v]").value, r.querySelector("[data-b=a]").value]);
+  function budgetTot() {
+    const t = budget().reduce((s, [, a]) => s + (+a || 0), 0);
+    const ob = +String($("obiettivo").value).replace(/[.\s€]/g, "") || 0;
+    $("budget-tot").innerHTML = `Totale: <strong>${euro(t)}</strong>${ob ? ` su un obiettivo di ${euro(ob)}${t === ob ? ' <span class="badge badge-ok">✓ corrisponde</span>' : ` · ${t < ob ? "mancano" : "eccedono"} ${euro(Math.abs(ob - t))}`}` : ""}`;
+    return [t, ob];
+  }
+  function checkBudget() {
+    const rows = budget().filter(([v, a]) => v.trim() || a);
+    const [t, ob] = budgetTot();
+    let m = "";
+    if (!rows.length) m = "Aggiungi almeno una voce di spesa.";
+    else if (rows.some(([v, a]) => !v.trim() || !(+a > 0))) m = "Ogni voce deve avere una descrizione e un importo in numeri.";
+    else if (t !== ob) m = `Il totale delle voci (${euro(t)}) deve essere uguale all'obiettivo (${euro(ob)}).`;
+    $("budget-err").textContent = m; $("budget-err").style.display = m ? "block" : "none";
+    return !m;
+  }
+  $("add").onclick = () => { budgetRow().querySelector("input").focus(); saveDraft(); };
+  $("budget").addEventListener("click", e => {
+    if (!e.target.classList.contains("rm")) return;
+    if ($("budget").children.length === 1) { e.target.parentElement.querySelectorAll("input").forEach(i => i.value = ""); }
+    else e.target.parentElement.remove();
+    budgetTot(); saveDraft();
+  });
+
+  /* ---------- Salvataggio automatico ---------- */
+  let saveT = null;
+  // Salva subito (immediato = true) o dopo una breve pausa nella digitazione
+  function saveDraft(immediato) {
+    $("saved").textContent = "Salvataggio…"; $("saved").classList.add("saving");
+    clearTimeout(saveT);
+    if (immediato === true) return scrivi();
+    saveT = setTimeout(scrivi, 500);
+  }
+  // Uscendo dalla pagina si salvano anche le ultime modifiche ancora in attesa (A1-07)
+  window.addEventListener("pagehide", () => { if (saveT !== null) scrivi(); });
+  function scrivi() {
+    {
+      const d = { step, budget: budget(), when: new Date().toISOString(), files: [...$("files").children].map(li => li.dataset.name) };
+      f.querySelectorAll("input[name], select[name], textarea[name]").forEach(el => d[el.name] = el.type === "checkbox" ? el.checked : el.value);
+      store.set(KEY, d);
+      $("saved").classList.remove("saving");
+      $("saved").textContent = "Bozza salvata alle " + new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+      saveT = null;
+    }
+  }
+
+  function restore() {
+    const d = store.get(KEY, null);
+    if (!d) { budgetRow(); return; }
+    f.querySelectorAll("input[name], select[name], textarea[name]").forEach(el => { if (d[el.name] !== undefined) el.type === "checkbox" ? (el.checked = d[el.name]) : (el.value = d[el.name]); });
+    (d.budget && d.budget.length ? d.budget : [["", ""]]).forEach(([v, a]) => budgetRow(v, a));
+    (d.files || []).forEach(addFile);
+    step = d.step || 1;
+    $("resume").hidden = false;
+    $("resume-when").textContent = new Date(d.when).toLocaleString("it-IT", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+    $("saved").textContent = "Bozza ripristinata";
+  }
+  $("ricomincia").onclick = () => { if (confirm("Vuoi cancellare la bozza e ricominciare? L'operazione non si può annullare.")) { try { localStorage.removeItem(KEY); } catch (e) {} location.reload(); } };
+
+  /* ---------- Allegati (simulati) ---------- */
+  function addFile(name) {
+    const li = document.createElement("li"); li.dataset.name = name;
+    li.innerHTML = `${esc(name)} <button type="button" class="linkbtn small">Rimuovi</button>`;
+    li.querySelector("button").onclick = () => { li.remove(); saveDraft(); };
+    $("files").appendChild(li);
+  }
+  $("file").addEventListener("change", e => { [...e.target.files].forEach(fl => fl.size > 10e6 ? UCF.toast(`“${fl.name}” supera i 10 MB`) : addFile(fl.name)); e.target.value = ""; saveDraft(); });
+
+  /* ---------- Navigazione tra i passi ---------- */
+  function show(n) {
+    step = n;
+    f.querySelectorAll(".fstep").forEach(s => s.hidden = +s.dataset.s !== n);
+    [...$("stepper").children].forEach((li, i) => { li.className = i + 1 < n ? "done" : i + 1 === n ? "current" : ""; li.toggleAttribute("aria-current", i + 1 === n); });
+    $("prev").style.visibility = n === 1 ? "hidden" : "visible";
+    $("next").textContent = n === 4 ? "Invia la candidatura" : "Continua";
+    $("ferr").classList.remove("show");
+    if (n === 3) budgetTot();
+    if (n === 4) riepilogo();
+  }
+
+  function valida(n) {
+    const errs = [];
+    Object.entries(rules[n] || {}).forEach(([id, fn]) => { const el = $(id); const m = fn(el.value); setErr(el, m); if (m) errs.push([id, m]); });
+    if (n === 3 && !checkBudget()) errs.push(["add", $("budget-err").textContent]);
+    if (n === 4 && !UCF.utente()) {
+      $("ferr").innerHTML = `<strong>Per inviare la candidatura accedi con il tuo account UniTO.</strong> La bozza resta salvata: dopo l'accesso tornerai qui. <a class="btn btn-sm" style="margin-left:8px" href="accedi.html?next=candidatura.html">Accedi e torna qui</a>`;
+      $("ferr").classList.add("show"); $("ferr").focus();
+      return false;
+    }
+    if (n === 4 && !$("dich").checked) { $("dich-err").textContent = "Conferma la dichiarazione per inviare."; $("dich-err").style.display = "block"; errs.push(["dich", "Dichiarazione da confermare"]); }
+    if (errs.length) {
+      $("ferr").innerHTML = `<strong>Prima di continuare correggi:</strong><ul style="margin:6px 0 0">${errs.map(([id, m]) => `<li><a href="#${id}">${m}</a></li>`).join("")}</ul>`;
+      $("ferr").classList.add("show"); $("ferr").focus();
+    }
+    return !errs.length;
+  }
+  $("ferr").addEventListener("click", e => { const a = e.target.closest("a"); if (a) { e.preventDefault(); $(a.getAttribute("href").slice(1)).focus(); } });
+
+  function riepilogo() {
+    const v = id => esc($(id).value || "—");
+    const r = { docente: "Docente o ricercatore", assegnista: "Assegnista o post-doc", dottorando: "Dottorando/a", studente: "Studente/ssa" };
+    const row = (k, val, s) => `<div class="summary-row"><span class="k">${k}</span><span class="v">${val} · <button type="button" class="linkbtn" data-go="${s}" style="font-weight:400">Modifica</button></span></div>`;
+    $("riepilogo").innerHTML = row("Proponente", `${v("nome")} (${r[$("ruolo").value] || "—"})`, 1) + row("Dipartimento", v("dip"), 1)
+      + row("Titolo", v("titolo"), 2) + row("Obiettivo", euro(+String($("obiettivo").value).replace(/[.\s€]/g, "") || 0), 2)
+      + row("Voci di spesa", budget().filter(b => b[0]).length + " voci", 3) + row("Allegati", $("files").children.length + " file", 3);
+  }
+  $("riepilogo").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) show(+b.dataset.go); });
+
+  $("prev").onclick = () => { show(step - 1); saveDraft(true); window.scrollTo({ top: 0 }); };
+  f.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!valida(step)) return;
+    if (step < 4) { show(step + 1); saveDraft(true); window.scrollTo({ top: 0 }); return; }
+    const b = $("next"); b.disabled = true; b.innerHTML = '<span class="spinner" aria-hidden="true"></span> Invio in corso…';
+    setTimeout(() => {
+      const prot = "CF-2026-" + String(Math.floor(Math.random() * 9000) + 1000);
+      const nuova = { protocollo: prot, titolo: $("titolo").value.trim(), tema: $("tema").value, obiettivo: +String($("obiettivo").value).replace(/[.\s€]/g, ""),
+        data: new Date().toISOString().slice(0, 10), stato: "inviata", nota: "Abbiamo ricevuto la candidatura. La valutazione inizia entro 5 giorni lavorativi." };
+      store.set(UCF.key("candidature"), [...store.get(UCF.key("candidature"), []), nuova]);
+      clearTimeout(saveT); saveT = null;
+      try { localStorage.removeItem(KEY); } catch (er) {}
+      document.querySelector(".layout-side").innerHTML = `<div class="panel" style="grid-column:1/-1;text-align:center;padding:48px">
+        <div class="confirm-check" aria-hidden="true">✓</div>
+        <h2>Candidatura inviata</h2>
+        <p class="lead muted">Numero di protocollo <strong>${prot}</strong>. Abbiamo mandato una copia a <strong>${esc($("email").value)}</strong>.</p>
+        <ol style="text-align:left;max-width:520px;margin:20px auto">
+          <li>Chiediamo noi la firma al tuo ${needRef() ? "docente di riferimento" : "direttore di dipartimento"}.</li>
+          <li>Entro 3 settimane ricevi l'esito della valutazione.</li>
+          <li>Se approvata, fissiamo un incontro per preparare insieme la campagna.</li>
+        </ol>
+        <div style="display:flex;gap:10px;justify-content:center"><a class="btn" href="i-miei-progetti.html#proposte">Segui lo stato in I miei progetti</a><a class="btn btn-ghost" href="proponi.html">Torna a Proponi un progetto</a></div></div>`;
+      document.querySelector(".page-head").remove(); $("resume").remove(); $("login-info").remove();
+      UCF.toast("Candidatura inviata");
+    }, 1500);
+  });
+
+  /* ---------- Feedback in tempo reale ---------- */
+  function contatori() {
+    document.querySelectorAll(".counter").forEach(c => { const n = $(c.dataset.for).value.length; c.textContent = `${n}/${c.dataset.max}`; c.classList.toggle("over", n > +c.dataset.max); });
+  }
+  f.addEventListener("input", e => {
+    const t = e.target;
+    if (t.closest(".has-error")) { const fn = (rules[step] || {})[t.id]; if (fn) setErr(t, fn(t.value)); }
+    if (t.dataset.b || t.id === "obiettivo") budgetTot();
+    contatori();
+    if (t.id === "dich") $("dich-err").style.display = "none";
+    saveDraft();
+  });
+  f.addEventListener("change", e => { if (e.target.id === "ruolo") $("ref-box").hidden = !needRef(); saveDraft(); });
+  f.addEventListener("focusout", e => { const fn = (rules[step] || {})[e.target.id]; if (fn && e.target.value) setErr(e.target, fn(e.target.value)); });
+
+  restore();
+  const u = UCF.utente();
+  if (u) {
+    if (!$("nome").value) $("nome").value = `${u.nome} ${u.cognome}`;
+    if (!$("email").value) $("email").value = u.email;
+    $("login-info").innerHTML = `<div class="alert alert-ok small"><span>Hai effettuato l'accesso come <strong>${esc(u.email)}</strong>. Dopo l'invio, trovi la candidatura in <a href="i-miei-progetti.html#proposte">I miei progetti › Le mie proposte</a>.</span></div>`;
+  } else {
+    $("login-info").innerHTML = `<div class="alert alert-info small"><span>Puoi compilare la candidatura anche senza accesso: la bozza si salva in questo browser. <strong>Per inviarla serve l'account UniTO.</strong> <a href="accedi.html?next=candidatura.html">Accedi ora</a></span></div>`;
+  }
+  $("ref-box").hidden = !needRef();
+  contatori();
+  show(step);
+});
+</script>
+</body>
+</html>
