@@ -2,6 +2,7 @@ UniTO Crowdfunding – Prototipo (Assignment 2, Gruppo F)
 ========================================================
 
 PAGINA INIZIALE: index.html
+Versione online: https://simoneg1391.github.io/unito-crowdfunding-prototipo/
 Avvio: aprire index.html con un browser recente (Chrome, Firefox, Edge, Safari).
 Non serve un server né una connessione (senza connessione cambiano solo i caratteri tipografici).
 Versione progettata per desktop.
