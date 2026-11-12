@@ -7,7 +7,7 @@
 <title>Accedi o registrati – UniTO Crowdfunding</title>
 <link rel="stylesheet" href="css/style.css">
 <style>
-  .auth { display: grid; grid-template-columns: minmax(0, 32.5rem) minmax(0, 1fr); gap: 56px; align-items: start; margin-top: 8px; }
+  .auth { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 56px; align-items: start; margin-top: 8px; }
   .tablist { display: flex; border-bottom: 2px solid #e2dccf; margin-bottom: 26px; }
   .tablist button { flex: 1; background: none; border: 0; font: 700 1.05rem "Atkinson Hyperlegible", "Segoe UI", Tahoma, sans-serif; padding: 14px; cursor: pointer; color: #555c69; border-bottom: 3px solid transparent; margin-bottom: -2px; }
   .tablist button[aria-selected="true"] { color: #13233f; border-bottom-color: #d9932b; }
@@ -71,7 +71,7 @@
         <form id="f-reg" novalidate>
           <fieldset style="border:0;padding:0;margin:0 0 18px">
             <legend class="label">Chi sei?</legend>
-            <div class="options" style="grid-template-columns:1fr 1fr">
+            <div class="options pay-grid">
               <div class="opt"><input type="radio" name="ruolo" id="r-sost" value="sostenitore" checked><label for="r-sost"><span class="radio" aria-hidden="true"></span><span class="what"><strong>Sostenitore</strong><span class="hint">Voglio seguire le campagne</span></span></label></div>
               <div class="opt"><input type="radio" name="ruolo" id="r-unito" value="unito"><label for="r-unito"><span class="radio" aria-hidden="true"></span><span class="what"><strong>Personale o studente UniTO</strong><span class="hint">Voglio anche proporre campagne</span></span></label></div>
             </div>

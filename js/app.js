@@ -22,14 +22,10 @@
   const campagna = (id) => (window.CAMPAGNE || []).find((c) => c.id === id);
 
   /* ---------- Icone (SVG inline) ---------- */
-  const ico = {
-    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>',
-    heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>',
-    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
-    bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9V16h7v-2.1A6 6 0 0012 3z"/></svg>',
-    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="20" height="20"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>',
-    search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true" width="20" height="20"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>'
-  };
+  // Icone decorative come immagini di sfondo CSS (classi .i-*): niente <svg> nel codice della pagina,
+  // che MAUVE++ segnalava come oggetti senza etichetta (ARIA6)
+  const icona = (n) => `<span class="i i-${n}" aria-hidden="true"></span>`;
+  const ico = { shield: icona("shield"), heart: icona("heart"), eye: icona("eye"), bulb: icona("bulb"), lock: icona("lock"), search: icona("search"), user: icona("user") };
 
   /* ---------- Account simulati (tutto in localStorage, nessun server) ---------- */
   const DEMO_UTENTI = [
@@ -140,7 +136,7 @@
   <div class="header-actions">
     <div class="profile">
       <button type="button" class="profile-btn" id="profile-btn" aria-expanded="false" aria-controls="profile-menu"${page === "miei" ? ' aria-current="page"' : ""}>
-        ${u ? `<span class="me" aria-hidden="true">${esc(u.nome[0])}</span> ${esc(u.nome)}` : `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg> Accedi`}
+        ${u ? `<span class="me" aria-hidden="true">${esc(u.nome[0])}</span> ${esc(u.nome)}` : `${ico.user} Accedi`}
         ${r.novita ? `<span class="count" title="Novità nei tuoi progetti">${r.novita}<span class="sr-only"> novità</span></span>` : ""}
         <span class="caret" aria-hidden="true">▾</span>
         <span class="sr-only">: menu del profilo e dei tuoi progetti</span>
